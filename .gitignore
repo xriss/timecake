@@ -1,5 +1,6 @@
 kernel-qemu
 *.img
+*.mkv
 root
 boot
 

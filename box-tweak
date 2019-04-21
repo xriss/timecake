@@ -21,8 +21,8 @@ hdmi_force_hotplug=1
 hdmi_drive=2
 hdmi_group=1
 config_hdmi_boost=4
-#set 720p with no overscan
-hdmi_mode=4
+#set 1080p with no overscan
+hdmi_mode=16
 disable_overscan=1
 EOF
 
