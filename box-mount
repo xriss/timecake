@@ -1,25 +1,23 @@
 cd `dirname $0`
 
 # Get the starting offset of the boot partition (not sure about trailing s)
-PART_BOOT_START=$(sudo parted raspi.img -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)
-PART_BOOT_SIZE=$(sudo parted raspi.img -ms unit s print | grep "^1" | cut -f 4 -d: | cut -f 1 -ds)
+PART_BOOT_START=$(sudo parted phantom.img -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)
+PART_BOOT_SIZE=$(sudo parted phantom.img -ms unit s print | grep "^1" | cut -f 4 -d: | cut -f 1 -ds)
 
 # Get the starting offset of the root partition (not sure about trailing s)
-PART_ROOT_START=$(sudo parted raspi.img -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
-PART_ROOT_SIZE=$(sudo parted raspi.img -ms unit s print | grep "^2" | cut -f 4 -d: | cut -f 1 -ds)
+PART_ROOT_START=$(sudo parted phantom.img -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
+PART_ROOT_SIZE=$(sudo parted phantom.img -ms unit s print | grep "^2" | cut -f 4 -d: | cut -f 1 -ds)
 
 echo $PART_BOOT_START $PART_BOOT_SIZE $PART_ROOT_START $PART_ROOT_SIZE
 
 
-echo " mounting boot so we can fiddle with the config "
+echo " mounting boot "
 mkdir -p boot
-sudo mount -o umask=0000,rw,loop,offset=$(($PART_BOOT_START * 512)),sizelimit=$(($PART_BOOT_SIZE * 512)) raspi.img ./boot
+sudo mount -o umask=0000,rw,loop,offset=$(($PART_BOOT_START * 512)),sizelimit=$(($PART_BOOT_SIZE * 512)) phantom.img ./boot
 #ls ./boot
 
-echo " mounting root so we can fiddle with the config "
+echo " mounting root "
 mkdir -p root
-sudo mount -o rw,loop,offset=$(($PART_ROOT_START * 512)),sizelimit=$(($PART_ROOT_SIZE * 512)) raspi.img ./root
+sudo mount -o rw,loop,offset=$(($PART_ROOT_START * 512)),sizelimit=$(($PART_ROOT_SIZE * 512)) phantom.img ./root
 #ls ./root
-
-echo " remember to umount before using the box "
 

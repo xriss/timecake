@@ -1,6 +1,6 @@
 cd `dirname $0`
 
-echo " running raspi.img using qemu "
+echo " running phantom.img using qemu "
 echo " you can no longer use this shell "
 
 
@@ -14,4 +14,4 @@ sudo cp root/etc/ld.so.preload.qemu root/etc/ld.so.preload
 ./box-umount
 
 
-qemu-system-arm -kernel kernel-qemu -cpu arm1176 -m 256 -M versatilepb -no-reboot -append "root=/dev/sda2 panic=1 console=ttyAMA0" -drive file=raspi.img,index=0,media=disk,format=raw -nic user,hostfwd=tcp::5522-:22 -nographic
+qemu-system-arm -kernel kernel-qemu -cpu arm1176 -m 256 -M versatilepb -no-reboot -append "root=/dev/sda2 panic=1 console=ttyAMA0" -drive file=phantom.img,index=0,media=disk,format=raw -net nic -net user,hostfwd=tcp::5522-:22 -nographic

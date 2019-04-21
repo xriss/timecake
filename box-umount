@@ -1,9 +1,29 @@
 cd `dirname $0`
 
+function please_umount() {
+busy=true
+while $busy
+do
+ if mountpoint -q "$1"
+ then
+  sudo umount "$1" 2> /dev/null
+  if [ $? -eq 0 ]
+  then
+   busy=false
+  else
+   echo -n '.'
+   sleep 1
+  fi
+ else
+  busy=false
+ fi
+done
+}
+
 echo " un mounting boot "
-sudo umount ./boot
-#rm -rf ./boot
+please_umount ./boot
+rm -rf ./boot
 
 echo " un mounting root "
-sudo umount ./root
-#rm -rf ./root
+please_umount ./root
+rm -rf ./root
