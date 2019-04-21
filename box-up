@@ -4,12 +4,11 @@ echo " running phantom.img using qemu "
 echo " you can no longer use this shell "
 
 
-echo " replacing fstab and ld.so.preload for qemu "
+echo " replacing fstab for qemu "
 
 ./box-mount
 
 sudo cp root/etc/fstab.qemu         root/etc/fstab
-sudo cp root/etc/ld.so.preload.qemu root/etc/ld.so.preload
 
 ./box-umount
 
