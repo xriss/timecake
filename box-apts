@@ -1,0 +1,6 @@
+cd `dirname $0`
+. ./box-settings
+
+sudo apt install -y qemu-system
+sudo apt install -y sshpass
+

@@ -33,14 +33,8 @@ else
 
 fi
 
-echo " installing qemu "
-
-sudo apt-get install qemu-system sshpass
-
 echo " copying raspbian "
 cp raspbian.img ${PHANTOM_OUTPUT}
-
-
 
 echo " resizing to ${PHANTOM_SIZE} "
 qemu-img resize -f raw ${PHANTOM_OUTPUT} ${PHANTOM_SIZE}
