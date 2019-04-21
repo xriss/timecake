@@ -10,6 +10,9 @@ echo " enable ssh "
 sudo tee boot/ssh >/dev/null <<EOF
 OK
 EOF
+sudo tee root/boot/ssh >/dev/null <<EOF
+OK
+EOF
 
 echo " setup boot config to 720p with no overscan and a 32meg gfx card"
 sudo tee boot/config.txt >/dev/null <<EOF
