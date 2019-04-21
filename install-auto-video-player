@@ -3,7 +3,7 @@ cd `dirname $0`
 
 if [ -f video.mkv ] ; then echo ; else
 
-sudo apt isntall youtube-dl
+sudo apt install youtube-dl
 youtube-dl -o video https://www.youtube.com/watch?v=2fZ75lhaGT8
 
 fi
