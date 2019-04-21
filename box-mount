@@ -1,4 +1,5 @@
 cd `dirname $0`
+. ./box-settings
 
 # Get the starting offset of the boot partition (not sure about trailing s)
 PART_BOOT_START=$(sudo parted phantom.img -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)

@@ -1,4 +1,5 @@
 cd `dirname $0`
+. ./box-settings
 
 echo " running phantom.img using qemu "
 echo " you can no longer use this shell "

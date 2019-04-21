@@ -1,4 +1,5 @@
 cd `dirname $0`
+. ./box-settings
 
 echo " Running box in background and waiting until we can ssh into it " 
 

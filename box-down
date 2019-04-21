@@ -1,4 +1,5 @@
 cd `dirname $0`
+. ./box-settings
 
 echo " box is shutting down "
 

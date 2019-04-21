@@ -1,3 +1,5 @@
+cd `dirname $0`
+. ./box-settings
 
 if [ -f phantom.mkv ] ; then echo ; else
 

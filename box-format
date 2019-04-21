@@ -1,6 +1,6 @@
 cd `dirname $0`
+. ./box-settings
 THISDIR=`dirname $0`
-
 
 #update these to get a newer version
 RASPBIAN_FILE=2019-04-08-raspbian-stretch-lite
