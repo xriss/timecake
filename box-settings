@@ -1,8 +1,8 @@
 
-# The size of the output sd card image
-PHANTOM_SIZE=4G
+# The size of the output sd card image, remember card sizes are lies
+PHANTOM_SIZE=3.6G
 
 
 # The name of the output sd card image
-PHANTOM_OUTPUT=phantom.img
+PHANTOM_OUTPUT=blower.img
 

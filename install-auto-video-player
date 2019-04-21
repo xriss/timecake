@@ -1,17 +1,17 @@
 cd `dirname $0`
 . ./box-settings
 
-if [ -f phantom.mkv ] ; then echo ; else
+if [ -f video.mkv ] ; then echo ; else
 
 sudo apt isntall youtube-dl
-youtube-dl -o phantom https://www.youtube.com/watch?v=2fZ75lhaGT8
+youtube-dl -o video https://www.youtube.com/watch?v=2fZ75lhaGT8
 
 fi
 
 
 ./box-mount
 
-cp phantom.mkv root/home/pi/
+cp video.mkv root/home/pi/
 
 ./box-umount
 
