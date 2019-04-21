@@ -1,3 +1,8 @@
-# The size of the output sd card image
 
+# The size of the output sd card image
 PHANTOM_SIZE=4G
+
+
+# The name of the output sd card image
+PHANTOM_OUTPUT=phantom.img
+

@@ -38,21 +38,21 @@ echo " installing qemu "
 sudo apt-get install qemu-system sshpass
 
 echo " copying raspbian "
-cp raspbian.img phantom.img
+cp raspbian.img ${PHANTOM_OUTPUT}
 
 
 
 echo " resizing to ${PHANTOM_SIZE} "
-qemu-img resize -f raw phantom.img ${PHANTOM_SIZE}
+qemu-img resize -f raw ${PHANTOM_OUTPUT} ${PHANTOM_SIZE}
 
 echo " checking partition information "
 
-PART_BOOT_START=$(parted phantom.img -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)
-PART_ROOT_START=$(parted phantom.img -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
+PART_BOOT_START=$(parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)
+PART_ROOT_START=$(parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
 echo $PART_BOOT_START $PART_ROOT_START
 
 echo " resizing using fdisk "
-fdisk phantom.img <<EOF
+fdisk ${PHANTOM_OUTPUT} <<EOF
 p
 d
 2

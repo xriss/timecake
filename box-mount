@@ -2,23 +2,23 @@ cd `dirname $0`
 . ./box-settings
 
 # Get the starting offset of the boot partition (not sure about trailing s)
-PART_BOOT_START=$(sudo parted phantom.img -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)
-PART_BOOT_SIZE=$(sudo parted phantom.img -ms unit s print | grep "^1" | cut -f 4 -d: | cut -f 1 -ds)
+PART_BOOT_START=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^1" | cut -f 2 -d: | cut -f 1 -ds)
+PART_BOOT_SIZE=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^1" | cut -f 4 -d: | cut -f 1 -ds)
 
 # Get the starting offset of the root partition (not sure about trailing s)
-PART_ROOT_START=$(sudo parted phantom.img -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
-PART_ROOT_SIZE=$(sudo parted phantom.img -ms unit s print | grep "^2" | cut -f 4 -d: | cut -f 1 -ds)
+PART_ROOT_START=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
+PART_ROOT_SIZE=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^2" | cut -f 4 -d: | cut -f 1 -ds)
 
 echo $PART_BOOT_START $PART_BOOT_SIZE $PART_ROOT_START $PART_ROOT_SIZE
 
 
 echo " mounting boot "
 mkdir -p boot
-sudo mount -n -o umask=0000,rw,loop,offset=$(($PART_BOOT_START * 512)),sizelimit=$(($PART_BOOT_SIZE * 512)) phantom.img ./boot
+sudo mount -n -o umask=0000,rw,loop,offset=$(($PART_BOOT_START * 512)),sizelimit=$(($PART_BOOT_SIZE * 512)) ${PHANTOM_OUTPUT} ./boot
 #ls ./boot
 
 echo " mounting root "
 mkdir -p root
-sudo mount -n -o rw,loop,offset=$(($PART_ROOT_START * 512)),sizelimit=$(($PART_ROOT_SIZE * 512)) phantom.img ./root
+sudo mount -n -o rw,loop,offset=$(($PART_ROOT_START * 512)),sizelimit=$(($PART_ROOT_SIZE * 512)) ${PHANTOM_OUTPUT} ./root
 #ls ./root
 
