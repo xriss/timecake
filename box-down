@@ -8,3 +8,12 @@ echo " waiting and then killing any still running qemu-system-arm "
 sleep 10
 killall qemu-system-arm
 
+
+echo " restoring fstab and ld.so.preload for card"
+
+./box-mount
+
+sudo cp root/etc/fstab.card         root/etc/fstab
+sudo cp root/etc/ld.so.preload.card root/etc/ld.so.preload
+
+./box-umount
