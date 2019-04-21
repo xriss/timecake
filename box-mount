@@ -9,9 +9,6 @@ PART_BOOT_SIZE=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^1" | cu
 PART_ROOT_START=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^2" | cut -f 2 -d: | cut -f 1 -ds)
 PART_ROOT_SIZE=$(sudo parted ${PHANTOM_OUTPUT} -ms unit s print | grep "^2" | cut -f 4 -d: | cut -f 1 -ds)
 
-echo $PART_BOOT_START $PART_BOOT_SIZE $PART_ROOT_START $PART_ROOT_SIZE
-
-
 echo " mounting boot "
 mkdir -p boot
 sudo mount -n -o umask=0000,rw,loop,offset=$(($PART_BOOT_START * 512)),sizelimit=$(($PART_BOOT_SIZE * 512)) ${PHANTOM_OUTPUT} ./boot
