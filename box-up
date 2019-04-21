@@ -6,7 +6,7 @@ echo " you can no longer use this shell "
 
 echo " replacing fstab and ld.so.preload for qemu "
 
-/box-mount
+./box-mount
 
 sudo cp root/etc/fstab.qemu         root/etc/fstab
 sudo cp root/etc/ld.so.preload.qemu root/etc/ld.so.preload
