@@ -72,9 +72,9 @@ sudo tee root/boot/ssh >/dev/null <<EOF
 OK
 EOF
 
-echo " setup boot config to 720p with no overscan and a 32meg gfx card"
+echo " setup boot config to 1080p with no overscan and a 64meg gfx card"
 sudo tee boot/config.txt >/dev/null <<EOF
-gpu_mem=32
+gpu_mem=64
 hdmi_force_hotplug=1
 hdmi_drive=2
 hdmi_group=1
@@ -96,6 +96,20 @@ sudo cp root/etc/fstab root/etc/fstab.card
 sudo tee root/etc/fstab.qemu >/dev/null <<EOF
 proc             /proc           proc    defaults          0       0
 /dev/sda2        /               ext4    defaults,noatime  0       1
+EOF
+
+sudo tee root/etc/rc.local >/dev/null <<EOF
+#!/bin/sh -e
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+#run simultaneously any /home/pi/*.boot.sh scripts we can find
+for f in /home/pi/*.boot.sh; do  # or wget-*.sh instead of *.sh
+  bash "$f" &
+done
+exit 0
 EOF
 
 ./box-umount

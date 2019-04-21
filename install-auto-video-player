@@ -13,6 +13,13 @@ fi
 
 cp video.mkv root/home/pi/
 
+sudo tee root/home/pi/video.boot.sh >/dev/null <<EOF
+
+omxplayer --blank --loop video.mkv
+
+EOF
+sudo chmod +x root/home/pi/video.boot.sh
+
 ./box-umount
 
 
