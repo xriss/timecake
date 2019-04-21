@@ -66,7 +66,7 @@ w
 EOF
 
 
-#this tweaks the rasbpian system config
+#this tweaks the rasbpian system config files
 ./box-tweak
 
 
@@ -84,9 +84,6 @@ done
 echo " apply final resize of partition "
 ./ssh " sudo resize2fs /dev/sda2 "
 
-echo " updating apt info and sites"
-./ssh " sudo apt-get update -y "
-./ssh " sudo apt-get upgrade -y "
 
 ./box-down
 

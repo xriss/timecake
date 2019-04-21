@@ -12,12 +12,12 @@ echo $PART_BOOT_START $PART_BOOT_SIZE $PART_ROOT_START $PART_ROOT_SIZE
 
 
 echo " mounting boot so we can fiddle with the config "
-mkdir boot
+mkdir -p boot
 sudo mount -o umask=0000,rw,loop,offset=$(($PART_BOOT_START * 512)),sizelimit=$(($PART_BOOT_SIZE * 512)) raspi.img ./boot
 #ls ./boot
 
 echo " mounting root so we can fiddle with the config "
-mkdir root
+mkdir -p root
 sudo mount -o rw,loop,offset=$(($PART_ROOT_START * 512)),sizelimit=$(($PART_ROOT_SIZE * 512)) raspi.img ./root
 #ls ./root
 
