@@ -42,8 +42,8 @@ cp raspbian.img phantom.img
 
 
 
-echo " resizing to 6gig "
-qemu-img resize -f raw phantom.img 6G
+echo " resizing to ${PHANTOM_SIZE} "
+qemu-img resize -f raw phantom.img ${PHANTOM_SIZE}
 
 echo " checking partition information "
 
