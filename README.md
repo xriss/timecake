@@ -1,13 +1,25 @@
 
-Basic use, tested with Ubuntu 19.04.
+Basic use, tested with Ubuntu 19.04. Setup with the following
 
 	git clone https://github.com/xriss/phantom-raspberry.git
 	cd phantom-raspberry
 	./box-apts
+
+Put the video you want to play as video.mkv in the phantom-raspberry 
+directory. if that file does not exist we will auto download a video 
+from youtube to use as a test
+
 	./box-format
 	./install-auto-video-player
 
-Copy the output blower.img to your sd card and it should just work.
+This will setup an sd card image that autoplays video.mkv on loop.
+
+Copy the output file, "blower.img", to an sd card like so 
+https://www.raspberrypi.org/documentation/installation/installing-images/ 
+and you will have an autoplaying video setup, just plug into a 
+Raspberry PI and apply power and a screen.
+
+---
 
 Edit box-settings if you wish to change some of the defaults and of 
 course you will want to provide your own video.mkv file to play. 
