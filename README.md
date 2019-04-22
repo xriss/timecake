@@ -21,10 +21,8 @@ Raspberry PI and apply power and a screen.
 
 ---
 
-Edit box-settings if you wish to change some of the defaults and of 
-course you will want to provide your own video.mkv file to play. 
-
-Checkout what you can do with the included scripts.
+Edit box-settings if you wish to change some of the defaults and 
+checkout what the provided scripts do below.
 
 	./box-apts
 
