@@ -36,9 +36,14 @@ Tweakable values, you should read and edit this file.
 
 	./box-format
 
-This will download raspbian (first run only) and create an output image 
-with some basic system modifications, mostly to get qemu working. Take 
-a look at the script for the tweaks it performs.
+This will download raspbian (first run only) and create a fresh output 
+image with some basic system modifications, mostly to get qemu working. 
+Take a look at the script for the tweaks it performs.
+
+Run this script again to reset the image back to base, it is quite 
+quick as we do not do an apt upgrade which can take a very long time. 
+If you want to make sure the image has the latest patches be sure to 
+apt upgrade before using.
 
 	./install-auto-video-player
 
@@ -80,7 +85,3 @@ box) then this script will ssh you into it.
 
 Shut down the running qemu box, this must be run for a clean shutdown 
 otherwise your image will not boot on a real raspberry pi.
-
-
-
-
