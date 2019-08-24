@@ -1,0 +1,15 @@
+cd `dirname $0`
+. ./box-settings
+
+./box-up-wait
+
+
+./ssh " sudo apt -y install git "
+./ssh " git clone https://github.com/goodtft/LCD-show.git "
+./ssh " sudo chmod -R 755 LCD-show "
+./ssh " cd LCD-show/ ; sudo ./MHS35-show "
+
+
+./box-down
+
+

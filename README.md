@@ -1,4 +1,15 @@
 
+UNDER CONSTRUCTION ALL WORDS ARE LIES
+=====================================
+
+
+
+
+
+
+
+
+
 Basic use, tested with Ubuntu 19.04. Setup with the following
 
 	git clone https://github.com/xriss/phantom-raspberry.git
