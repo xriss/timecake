@@ -13,3 +13,31 @@ cd `dirname $0`
 ./box-down
 
 
+git clone https://github.com/goodtft/LCD-show.git
+sudo chmod -R 755 LCD-show
+
+# that script set us up the wrong boot folder
+# so we need to redo with the boot we will actually use
+
+./box-mount
+
+sudo cp ./LCD-show/usr/mhs35-overlay.dtb ./boot/overlays/
+sudo cp ./LCD-show/usr/mhs35-overlay.dtb ./boot/overlays/mhs35.dtbo
+
+sudo cp -rf ./LCD-show/boot/config-nomal.txt ./boot/config.txt
+cat <<EOT | sudo tee -a ./boot/config.txt
+
+hdmi_force_hotplug=1
+dtparam=i2c_arm=on
+dtparam=spi=on
+enable_uart=1
+dtoverlay=mhs35:rotate=270
+hdmi_group=2
+hdmi_mode=1
+hdmi_mode=87
+hdmi_cvt 480 320 60 6 0 0 0
+hdmi_drive=2
+
+EOT
+
+./box-umount

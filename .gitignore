@@ -3,4 +3,5 @@ kernel-qemu
 *.mkv
 root
 boot
+LCD-show
 
