@@ -40,4 +40,26 @@ hdmi_drive=2
 
 EOT
 
+
+sudo tee root/etc/rc.local >/dev/null <<EOF
+#!/bin/sh -e
+# Print the IP address
+_IP="\$(hostname -I)" || true
+if [ "\$_IP" ]; then
+  printf "My IP address is %s\n" "\$_IP"
+fi
+
+#LCD
+sleep 7
+fbcp &
+
+#run simultaneously any /home/pi/*.boot.sh scripts we can find
+cd /home/pi/
+for f in *.boot.sh; do
+  bash "\${f}" >/dev/null &
+done
+exit 0
+EOF
+
+
 ./box-umount
