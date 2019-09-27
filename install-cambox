@@ -6,7 +6,6 @@ cd `dirname $0`
 
 ./ssh " sudo apt update "
 ./ssh " sudo apt -y install motion "
-./ssh " sudo modprobe bcm2835-v4l2 "
 
 ./ssh " mkdir /home/pi/Monitor "
 ./ssh " sudo chgrp motion /home/pi/Monitor "
@@ -18,7 +17,13 @@ cd `dirname $0`
 
 ./box-mount
 
-sudo tee root/etc/motion/motion.conf >>/dev/null <<EOF
+sudo tee -a root/etc/modules >/dev/null <<EOF
+
+bcm2835-v4l2
+
+EOF
+
+sudo tee -a root/etc/motion/motion.conf >/dev/null <<EOF
 
 daemon on
 stream_localhost off
@@ -29,11 +34,15 @@ width 640
 height 480
 framerate 10
 
+output_pictures off
+ffmpeg_output_movies off
+
+
 EOF
 
 
 
-sudo tee root/etc/default/motion >>/dev/null <<EOF
+sudo tee -a root/etc/default/motion >/dev/null <<EOF
 
 start_motion_daemon=yes
 
