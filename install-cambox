@@ -1,0 +1,42 @@
+cd `dirname $0`
+. ./box-settings
+
+
+./box-up-wait
+
+./ssh " sudo apt update "
+./ssh " sudo apt -y install motion "
+./ssh " sudo modprobe bcm2835-v4l2 "
+
+./ssh " mkdir /home/pi/Monitor "
+./ssh " sudo chgrp motion /home/pi/Monitor "
+./ssh " chmod g+rwx /home/pi/Monitor "
+./ssh " sudo service motion start "
+
+./box-down
+
+
+./box-mount
+
+sudo tee root/etc/motion/motion.conf >>/dev/null <<EOF
+
+daemon on
+stream_localhost off
+target_dir /home/pi/Monitor
+
+v4l2_palette 15
+width 640
+height 480
+framerate 10
+
+EOF
+
+
+
+sudo tee root/etc/default/motion >>/dev/null <<EOF
+
+start_motion_daemon=yes
+
+EOF
+
+./box-umount
