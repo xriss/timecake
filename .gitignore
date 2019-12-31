@@ -1,7 +1,8 @@
-kernel-qemu
-*.img
-*.mkv
-root
-boot
-LCD-show
+
+raspi/kernel-qemu
+raspi/*.img
+raspi/*.mkv
+raspi/root
+raspi/boot
+raspi/LCD-show
 
