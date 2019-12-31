@@ -5,12 +5,29 @@ cd `dirname $0`
 ./box-up-wait
 
 ./ssh " sudo apt update "
-#./ssh " sudo apt -y install openocd "
+
+# this version is too old
+
+./ssh " sudo apt -y install openocd "
+
+# so build latest version
+
+./ssh " sudo apt -y install build-essential "
+./ssh " sudo apt -y install git "
+./ssh " sudo apt -y install make "
+./ssh " sudo apt -y install libtool "
+./ssh " sudo apt -y install pkg-config "
+./ssh " sudo apt -y install autoconf "
+./ssh " sudo apt -y install automake "
+./ssh " sudo apt -y install texinfo "
+./ssh " sudo apt -y install libusb-1.0-0-dev "
 
 ./ssh " git clone https://git.code.sf.net/p/openocd/code openocd "
 
 ./ssh " cd openocd && ./bootstrap "
-./ssh " cd openocd && ./configure "
+./ssh " cd openocd && ./configure CFLAGS=-Wno-error --enable-sysfsgpio --enable-bcm2835gpio "
 ./ssh " cd openocd && make "
 ./ssh " cd openocd && sudo make install "
+
+./box-down
 
