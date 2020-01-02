@@ -4,5 +4,5 @@ PHANTOM_SIZE=3.6G
 
 
 # The name of the output sd card image
-PHANTOM_OUTPUT=cambox.img
+PHANTOM_OUTPUT=pinetime.img
 

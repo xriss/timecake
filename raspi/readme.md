@@ -1,33 +1,19 @@
 
-UNDER CONSTRUCTION ALL WORDS ARE LIES
-=====================================
 
-![under construction](https://media.giphy.com/media/EIiJp9cQ3GeEU/giphy.gif)
-![badydance](http://giphygifs.s3.amazonaws.com/media/iqBr5cmyz0t0s/giphy.gif)
-![construction](https://media.giphy.com/media/WrOweqqiDcvoQszeSu/giphy.gif)
+Tested with Ubuntu 19.10 run the scripts in this order.
 
-
-
-
-Basic use, tested with Ubuntu 19.04. Setup with the following
-
-	git clone https://github.com/xriss/phantom-raspberry.git
-	cd phantom-raspberry
 	./box-apts
-
-Put the video you want to play as video.mkv in the phantom-raspberry 
-directory. if that file does not exist we will auto download a video 
-from youtube to use as a test
-
 	./box-format
-	./install-auto-video-player
+	./install-openocd
 
-This will setup an sd card image that autoplays video.mkv on loop.
+This will download apt dependencies then create and setup an sd card image and finally build and install openocd so that it runs at boot using the raspberrpy GPIO pins.
 
-Copy the output file, "blower.img", to an sd card like so 
-https://www.raspberrypi.org/documentation/installation/installing-images/ 
-and you will have an autoplaying video setup, just plug into a 
-Raspberry PI and apply power and a screen.
+	3v3      ->   3,3V VCC
+	GND      ->   GND
+	BCM 25   ->   SWDIO
+	BCM 11   ->   SWDCLK
+
+Write the pinetime.img created by these scripts to an sd card.
 
 ---
 
