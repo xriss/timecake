@@ -7,8 +7,7 @@ cd `dirname $0`
 ./ssh " sudo apt update "
 
 # this version is too old
-
-./ssh " sudo apt -y install openocd "
+#./ssh " sudo apt -y install openocd "
 
 # so build latest version
 
@@ -29,5 +28,19 @@ cd `dirname $0`
 ./ssh " cd openocd && make "
 ./ssh " cd openocd && sudo make install "
 
+
+sudo openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f target/nrf52.cfg -d2
+
 ./box-down
+
+
+./box-mount
+
+echo " autostart openocd "
+sudo tee root/home/pi/openocd.boot.sh >/dev/null <<EOF
+cd /home/pi/openocd/tcl
+sudo ../src/openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f target/nrf52.cfg -d2
+EOF
+
+./box-umount
 
