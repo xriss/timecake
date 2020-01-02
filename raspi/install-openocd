@@ -41,6 +41,7 @@ sudo tee root/home/pi/openocd.boot.sh >/dev/null <<EOF
 cd /home/pi/openocd/tcl
 sudo ../src/openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f target/nrf52.cfg -d2
 EOF
+chmod +x root/home/pi/openocd.boot.sh
 
 ./box-umount
 

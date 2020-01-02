@@ -6,7 +6,9 @@ Tested with Ubuntu 19.10 run the scripts in this order.
 	./box-format
 	./install-openocd
 
-This will download apt dependencies then create and setup an sd card image and finally build and install openocd so that it runs at boot using the raspberrpy GPIO pins.
+This will download apt dependencies then create and setup an sd card 
+image and finally build and install openocd so that it runs at boot 
+using the raspberrpy GPIO pins.
 
 	3v3      ->   3,3V VCC
 	GND      ->   GND
@@ -14,6 +16,29 @@ This will download apt dependencies then create and setup an sd card image and f
 	BCM 11   ->   SWDCLK
 
 Write the pinetime.img created by these scripts to an sd card.
+
+Boot the pi. I personally prefer to plug in a network cable between my 
+laptop and the PI. I set the ethernet port to shared internet on my 
+laptop ( nm-connection-editor , wired connection , ipv4 ,  method = 
+shared to other computers ) and just use nmap to find the address the 
+pi got assigned.
+
+	sudo nmap -sS -p 22 10.42.0.0/24
+
+In theory you can then
+
+	telnet 10.42.0.xxx 4444
+
+and connect to a running OpenOCD server or if it did not autostart at 
+boot (probably if wires are not connected) you can ssh into the pi and 
+start it manually.
+
+	ssh pi@10.42.0.xxx
+
+	# then login ( pi / raspberry ) and run
+
+	/home/pi/openocd.boot.sh
+
 
 ---
 
