@@ -37,9 +37,13 @@ sudo openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f t
 ./box-mount
 
 echo " autostart openocd "
-sudo tee root/home/pi/openocd.boot.sh >/dev/null <<EOF
+sudo tee root/home/pi/swd.boot.sh >/dev/null <<EOF
 cd /home/pi/openocd/tcl
-sudo ../src/openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f target/nrf52.cfg -d2
+while true; do 
+sudo ../src/openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f target/nrf52.cfg -d2 2>&1 | tee -a /home/pi/swd.log
+echo " Well that did not work... will try again in 5 secs. " | tee -a /home/pi/swd.log
+sleep 5
+done
 EOF
 chmod +x root/home/pi/openocd.boot.sh
 
