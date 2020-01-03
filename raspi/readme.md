@@ -1,5 +1,4 @@
 
-
 Tested with Ubuntu 19.10 run the scripts in this order.
 
 	./box-apts
@@ -18,8 +17,8 @@ using the raspberrpy GPIO pins.
 Write the pinetime.img created by these scripts to an sd card.
 
 Boot the pi. I personally prefer to plug in a network cable between my 
-laptop and the PI. I set the ethernet port to shared internet on my 
-laptop ( nm-connection-editor , wired connection , ipv4 ,  method = 
+ubuntu laptop and the PI. I set the ethernet port to shared internet on 
+my laptop ( nm-connection-editor , wired connection , ipv4 ,  method = 
 shared to other computers ) and just use nmap to find the address the 
 pi got assigned.
 
@@ -29,16 +28,18 @@ In theory you can then
 
 	telnet 10.42.0.xxx 4444
 
-and connect to a running OpenOCD server or if it did not autostart at 
-boot (probably if wires are not connected) you can ssh into the pi and 
-start it manually.
-
-	ssh pi@10.42.0.xxx
-
-	# then login ( pi / raspberry ) and run
+and connect to a running OpenOCD server, the pi should continuously try 
+and connect using the script
 
 	/home/pi/openocd.boot.sh
 
+for more advanced settings rename this file so it does not run at boot 
+( all the .boot.sh files in the pi home directory will auto run. ) and 
+adjust to your preferences after a reboot.
+
+	ssh pi@10.42.0.xxx
+
+	# then login ( pi / raspberry ) and away you go
 
 ---
 

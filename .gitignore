@@ -1,6 +1,7 @@
 
 raspi/kernel-qemu
 raspi/*.img
+raspi/*.img.gz
 raspi/*.mkv
 raspi/root
 raspi/boot
