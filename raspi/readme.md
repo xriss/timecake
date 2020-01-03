@@ -7,14 +7,16 @@ Tested with Ubuntu 19.10 run the scripts in this order.
 
 This will download apt dependencies then create and setup an sd card 
 image and finally build and install openocd so that it runs at boot 
-using the raspberrpy GPIO pins.
+using the default raspberry GPIO pins.
 
 	3v3      ->   3,3V VCC
 	GND      ->   GND
 	BCM 25   ->   SWDIO
 	BCM 11   ->   SWDCLK
 
-Write the pinetime.img created by these scripts to an sd card.
+Write the raspocd.img created by these scripts to an sd card. You can 
+find a prebuilt raspocd.img.gz under releases to download gunzip and 
+write.
 
 Boot the pi. I personally prefer to plug in a network cable between my 
 ubuntu laptop and the PI. I set the ethernet port to shared internet on 
@@ -29,17 +31,17 @@ In theory you can then
 	telnet 10.42.0.xxx 4444
 
 and connect to a running OpenOCD server, the pi should continuously try 
-and connect using the script
+and connect using this script
 
 	/home/pi/openocd.boot.sh
+	
+Logs can be found in /home/pi/swd.log which will be full of errors 
+until you connect the GPIO pins.
 
-for more advanced settings rename this file so it does not run at boot 
-( all the .boot.sh files in the pi home directory will auto run. ) and 
-adjust to your preferences after a reboot.
-
-	ssh pi@10.42.0.xxx
-
-	# then login ( pi / raspberry ) and away you go
+For more advanced settings rename this script so it does not run at 
+boot and continuously try to connect. ( all the .boot.sh files in the 
+pi home directory will auto run. ) then just ssh in yourself to run 
+things manually.
 
 ---
 
