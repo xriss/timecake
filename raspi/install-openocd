@@ -29,8 +29,6 @@ cd `dirname $0`
 ./ssh " cd openocd && sudo make install "
 
 
-sudo openocd -f interface/raspberrypi2-native.cfg -c "transport select swd" -f target/nrf52.cfg -d2
-
 ./box-down
 
 
