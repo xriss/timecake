@@ -10,6 +10,11 @@
 #define LCD_BACKLIGHT_MID 22
 #define LCD_BACKLIGHT_HIGH 23
 
+/*
+
+setup all LCD related stuff
+
+*/
 int lcd_setup(void)
 {
 	
@@ -22,6 +27,7 @@ int lcd_setup(void)
 
 
 /*
+
 Only 4 levels but use a bright value from 0 to 255
 
 0x00 == off
