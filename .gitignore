@@ -7,3 +7,4 @@ raspi/root
 raspi/boot
 raspi/LCD-show
 
+nr5sdk/*
