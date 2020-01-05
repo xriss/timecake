@@ -8,12 +8,16 @@ UNDER CONSTRUCTION ALL WORDS ARE LIES
 
 
 
-See raspi directory for scripts to build an sd card image to run on a PI.
+See raspi directory for scripts to build an sd card image to run on a 
+PI. Or check github releases for an sd card image you could just 
+download.
 
-This PI is then used as a programmer for the pinetime connected to the GPIO pins.
+This PI is then used as a programmer for the pinetime connected to the 
+GPIO pins and to a network so we can squirt code across remotely.
 
 
-To build code, which currently just flashes the screen backlight to prove something is hapening.
+To build code, which currently just flashes the screen backlight to 
+prove something is running.
 
 
 1. `./apts.sh`
@@ -25,10 +29,12 @@ To build code, which currently just flashes the screen backlight to prove someth
 4. `./make.sh`
     * Compile and link in ./out/
 5. `./gdb.sh`
-    * Start gdb connected to OpenOCD and squirt code across (you will need to fix connection IP of script)
+    * Start gdb connected to OpenOCD and squirt code across
     * Type "continue" to run the code
 
+You will need to fix the IP of the PI found in ./gdb.gdb as right now 
+this is hardcoded and will only work for me.
 
 
-
+Hope this helps, but remember it is all just notes as I go...
 
