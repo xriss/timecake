@@ -8,15 +8,15 @@ UNDER CONSTRUCTION ALL WORDS ARE LIES
 
 
 
-1 ./apts.sh
+1. `./apts.sh`
     * Install dependencies
-2 ./nr5sdk.sh
+2. `./nr5sdk.sh`
     * Download SDK
-3 ./cmake.sh
+3. `./cmake.sh`
     * Perform out of build cmake in ./out/
-4 ./make.sh
+4. `./make.sh`
     * Compile and link
-5 ./gdb.sh
+5. `./gdb.sh`
     * Start gdb connected to OpenOCD and squirt code across
     * You will need to "continue" to run the code
 
