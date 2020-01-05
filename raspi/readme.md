@@ -15,8 +15,8 @@ using the default raspberry GPIO pins.
 	BCM 11   ->   SWDCLK
 
 Write the raspocd.img created by these scripts to an sd card. You can 
-find a prebuilt raspocd.img.gz under releases to download gunzip and 
-write.
+also find a prebuilt raspocd.img.gz under releases to download gunzip and 
+write as this will take some time to build.
 
 Boot the pi. I personally prefer to plug in a network cable between my 
 ubuntu laptop and the PI. I set the ethernet port to shared internet on 
@@ -45,8 +45,8 @@ things manually.
 
 ---
 
-Edit box-settings if you wish to change some of the defaults and 
-checkout what the provided scripts do below.
+The scripts for handling the qemu image are documented bellow if you
+run into any problems or wish to tweak things.
 
 	./box-apts
 
@@ -68,12 +68,6 @@ Run this script again to reset the image back to base, it is quite
 quick as we do not do an apt upgrade which can take a very long time. 
 If you want to make sure the image has the latest patches be sure to 
 apt upgrade before using.
-
-	./install-auto-video-player
-
-This will setup the image that ./box-format created to auto play a 
-video, see ./box-settings for simple changes or modify this script if 
-you need even more control.
 
 	./box-mount
 
