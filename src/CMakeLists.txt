@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(pinetime-app C CXX ASM)
+project(pinetime-test C CXX ASM)
 
 # define some variables just for this example to determine file locations
 set(NRF_PROJECT_NAME timecake)
-set(NRF_BOARD pca10040)
+#set(NRF_BOARD pca10040)
 #set(NRF_SOFTDEVICE s132)
 
 nRF5x_toolchainSetup()
@@ -21,8 +21,11 @@ nRF5x_setup()
 #
 #nRF5x_addBLEService(ble_lbs)
 
-add_definitions(-DCONFIG_GPIO_AS_PINRESET)
+#nRF5x_addAppUART()
+
+#add_definitions(-DCONFIG_GPIO_AS_PINRESET)
 add_definitions(-DDEBUG)
+add_definitions(-DUSE_APP_CONFIG)
 
 include_directories(.)
 

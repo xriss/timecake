@@ -115,7 +115,7 @@ macro(nRF5x_setup)
             "${NRF5_SDK_PATH}/components/softdevice/common/nrf_sdh.c"
             "${NRF5_SDK_PATH}/components/softdevice/common/nrf_sdh_soc.c"
             "${NRF5_SDK_PATH}/integration/nrfx/legacy/nrf_drv_clock.c"
-            "${NRF5_SDK_PATH}/integration/nrfx/legacy/nrf_drv_uart.c"
+#            "${NRF5_SDK_PATH}/integration/nrfx/legacy/nrf_drv_uart.c"
             "${NRF5_SDK_PATH}/modules/nrfx/drivers/src/nrfx_clock.c"
             "${NRF5_SDK_PATH}/modules/nrfx/drivers/src/nrfx_gpiote.c"
             "${NRF5_SDK_PATH}/modules/nrfx/drivers/src/nrfx_uart.c"
@@ -216,6 +216,41 @@ macro(nRF5x_setup)
             "${NRF5_SDK_PATH}/components/libraries/uart/retarget.c"
             )
 
+
+    # adds target for erasing and flashing the board with a softdevice
+    add_custom_target(FLASH_SOFTDEVICE ALL
+            COMMAND ${NRFJPROG} --program ${SOFTDEVICE_PATH} -f ${NRF_TARGET} --sectorerase
+            COMMAND sleep 0.5s
+            COMMAND ${NRFJPROG} --reset -f ${NRF_TARGET}
+            COMMENT "flashing SoftDevice"
+            )
+
+    add_custom_target(FLASH_ERASE ALL
+            COMMAND ${NRFJPROG} --eraseall -f ${NRF_TARGET}
+            COMMENT "erasing flashing"
+            )
+
+    if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+        set(TERMINAL "open")
+    elseif(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+        set(TERMINAL "sh")
+    else()
+        set(TERMINAL "gnome-terminal")
+    endif()
+
+    add_custom_target(START_JLINK ALL
+            COMMAND ${TERMINAL} "${DIR_OF_nRF5x_CMAKE}/runJLinkGDBServer-${NRF_TARGET}"
+            COMMAND ${TERMINAL} "${DIR_OF_nRF5x_CMAKE}/runJLinkExe-${NRF_TARGET}"
+            COMMAND sleep 2s
+            COMMAND ${TERMINAL} "${DIR_OF_nRF5x_CMAKE}/runJLinkRTTClient"
+            COMMENT "started JLink commands"
+            )
+
+endmacro(nRF5x_setup)
+
+
+macro(nRF5x_junk)
+
     # Segger RTT
     include_directories(
             "${NRF5_SDK_PATH}/external/segger_rtt/"
@@ -265,36 +300,7 @@ macro(nRF5x_setup)
             "${NRF5_SDK_PATH}/components/ble/nrf_ble_qwr/nrf_ble_qwr.c"
             )
 
-    # adds target for erasing and flashing the board with a softdevice
-    add_custom_target(FLASH_SOFTDEVICE ALL
-            COMMAND ${NRFJPROG} --program ${SOFTDEVICE_PATH} -f ${NRF_TARGET} --sectorerase
-            COMMAND sleep 0.5s
-            COMMAND ${NRFJPROG} --reset -f ${NRF_TARGET}
-            COMMENT "flashing SoftDevice"
-            )
-
-    add_custom_target(FLASH_ERASE ALL
-            COMMAND ${NRFJPROG} --eraseall -f ${NRF_TARGET}
-            COMMENT "erasing flashing"
-            )
-
-    if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
-        set(TERMINAL "open")
-    elseif(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-        set(TERMINAL "sh")
-    else()
-        set(TERMINAL "gnome-terminal")
-    endif()
-
-    add_custom_target(START_JLINK ALL
-            COMMAND ${TERMINAL} "${DIR_OF_nRF5x_CMAKE}/runJLinkGDBServer-${NRF_TARGET}"
-            COMMAND ${TERMINAL} "${DIR_OF_nRF5x_CMAKE}/runJLinkExe-${NRF_TARGET}"
-            COMMAND sleep 2s
-            COMMAND ${TERMINAL} "${DIR_OF_nRF5x_CMAKE}/runJLinkRTTClient"
-            COMMENT "started JLink commands"
-            )
-
-endmacro(nRF5x_setup)
+endmacro(nRF5x_junk)
 
 # adds a target for comiling and flashing an executable
 macro(nRF5x_addExecutable EXECUTABLE_NAME SOURCE_FILES)

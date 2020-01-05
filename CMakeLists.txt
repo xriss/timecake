@@ -13,6 +13,6 @@ include("${CMAKE_CURRENT_LIST_DIR}/CMake_nRF5x.cmake")
 
 nRF5x_toolchainSetup()
 
-project(ExampleProject C)
+project(timecake-all C)
 
 add_subdirectory(src)
