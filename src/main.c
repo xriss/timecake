@@ -3,24 +3,23 @@
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
 
+
+#include "sys/lcd.h"
+
+
 int main(void)
 {
-	
-	nrf_gpio_cfg_output(22);
-	nrf_gpio_cfg_output(23);
-	nrf_gpio_cfg_output(14);
-	
-	
+
+	lcd_setup();
+
+
 	while(1)
 	{
-		nrf_gpio_pin_write(22,0);
-		nrf_gpio_pin_write(23,0);
-		nrf_gpio_pin_write(14,0);
-		nrf_delay_ms(500);
-		nrf_gpio_pin_write(22,1);
-		nrf_gpio_pin_write(23,1);
-		nrf_gpio_pin_write(14,1);
-		nrf_delay_ms(500);
+		for(int i=0;i<256;i++)
+		{
+			lcd_backlight(i);
+			nrf_delay_ms(10);
+		}
 	}
 
 }

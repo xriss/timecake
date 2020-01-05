@@ -30,7 +30,12 @@ add_definitions(-DUSE_APP_CONFIG)
 include_directories(.)
 
 list(APPEND SOURCE_FILES
+
+  sys/lcd_pine.c
+  sys/lcd.c
+
   main.c
+
 )
 
 set(INCLUDE_FILES
