@@ -17,7 +17,8 @@ int main(void)
 	{
 		for(int i=0;i<256;i++)
 		{
-			lcd_backlight(i);
+			int d=i>128?256-i:i;
+			lcd_backlight(d+64+32);
 			nrf_delay_ms(10);
 		}
 	}

@@ -24,7 +24,7 @@ nRF5x_setup()
 #nRF5x_addAppUART()
 
 #add_definitions(-DCONFIG_GPIO_AS_PINRESET)
-add_definitions(-DDEBUG)
+#add_definitions(-DDEBUG)
 add_definitions(-DUSE_APP_CONFIG)
 
 include_directories(.)
