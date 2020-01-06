@@ -12,6 +12,8 @@ extern int lcd_setup(void);
 
 extern int lcd_backlight(int bright);
 
+// set/get color mode values are : 0x444 , 0x565 , 0x888 or 0x000 to just read.
+extern int lcd_color_mode(int color_mode);
 
 // simple shader callback system to fill screen
 extern void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data);

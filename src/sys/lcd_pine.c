@@ -205,29 +205,23 @@ int lcd_setup(void)
 	// prepare to send some commands
 	lcd_transfer_setup();
 
-
 	// software reset
-	lcd_command(CMD_SWRESET);
+	lcd_command(CMD_SWRESET); nrf_delay_ms(200);
 
 	// sleep off
 	lcd_command(CMD_SLPOUT);
 		
-	// select 565 pixel format
-	lcd_command(CMD_COLMOD); lcd_data(0x55);
-  
-	// access
-	lcd_command(CMD_MADCTL); lcd_data(0x00);
+	// select 444 pixel format (Which is fastest to write)
+	lcd_color_mode(0x444);
 
-	// full window
-	lcd_window(0,0,240,240);
+	// set screen to black
+	int c=0x000000;
+	lcd_shader(0,0,240,240,lcd_shader_color,&c);
 
 	// display on
 	lcd_command(CMD_INVON);
 	lcd_command(CMD_NORON);
 	lcd_command(CMD_DISPON);
-	
-	int c=0x000000;
-	lcd_shader(0,0,240,240,lcd_shader_color,&c);
 	
 	// finish sending commands
 	lcd_transfer_clean();
@@ -281,28 +275,169 @@ int lcd_shader_color(int x,int y,void *data)
 }
 
 // shade a rectangular area with a function
-void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
+static void lcd_shader_565(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
 {
+	volatile uint32_t r; // dummy read value
+
 	nrf_gpio_pin_write(LCD_SELECT,0); // make sure we are talking to lcd
 	lcd_window(px,py,hx,hy); // window 
 	lcd_command(CMD_RAMWR); // write pixels
 	nrf_gpio_pin_write(LCD_COMMAND,1); // data
-	volatile uint32_t r;
-	for(int y=py;y<py+hy;y++)
-	{
-		int d=(*pixel)(px,y,data);
-		for(int x=px;x<px+hx;x++)
-		{
-			NRF_SPI0->EVENTS_READY=0;           // ready
-			NRF_SPI0->TXD=(uint32_t)(((d>>16)&0xf8)|((d>>13)&0x07));     // out
-			while(NRF_SPI0->EVENTS_READY==0){;} // wait
-			r=NRF_SPI0->RXD;                    // in
 
-			NRF_SPI0->EVENTS_READY=0;           // ready
-			NRF_SPI0->TXD=(uint32_t)(((d>>3)&0x1f)|((d>>5)&0x70));          // out
-			d=(*pixel)(x+1,y,data);             // fetch next pixel color while we are waiting
-			while(NRF_SPI0->EVENTS_READY==0){;} // wait
-			r=NRF_SPI0->RXD;                    // in
+	// state passed into lcd_shader_transfer by pointers
+	int d1=0;
+
+	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
+	{
+		int x=xy%hx;
+		int y=xy/hx;
+		if(xy==0) // first transfer is read only
+		{
+			d1=(*pixel)(x,y,data);												// get first pixel at start
+		}
+		else // other transfers
+		{
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)(((d1>>16)&0xf8)|((d1>>13)&0x07));			// out
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;                    								// in
+
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)(((d1>>3)&0x1f)|((d1>>5)&0x70));			// out
+			d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;													// in
 		}
 	}
+}
+
+// shade a rectangular area with a function
+static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
+{
+	volatile uint32_t r; // dummy read value
+
+	nrf_gpio_pin_write(LCD_SELECT,0); // make sure we are talking to lcd
+	lcd_window(px,py,hx,hy); // window 
+	lcd_command(CMD_RAMWR); // write pixels
+	nrf_gpio_pin_write(LCD_COMMAND,1); // data
+
+	// state passed into lcd_shader_transfer by pointers
+	int d1=0;
+	int d2=0;
+
+	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
+	{
+		int x=xy%hx;
+		int y=xy/hx;
+		if(xy&1) // odd
+		{
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)(((d1>>16)&0xf0)|((d1>>12)&0x0f));			// out
+			d2=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;                    								// in
+
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)(((d1)&0xf0)|((d2>>20)&0x0f));			// out
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;													// in
+		}
+		else // even
+		{
+			if(xy==0) // first
+			{
+				d1=(*pixel)(x,y,data);												// get first pixel at start
+			}
+			else
+			{
+				NRF_SPI0->EVENTS_READY=0;											// ready
+				NRF_SPI0->TXD=(uint32_t)(((d2>>8)&0xf0)|((d2>>4)&0x0f));			// out
+				d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+				while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+				r=NRF_SPI0->RXD;													// in
+			}
+		}
+	}
+}
+
+// shade a rectangular area with a function
+static void lcd_shader_888(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
+{
+	volatile uint32_t r; // dummy read value
+
+	nrf_gpio_pin_write(LCD_SELECT,0); // make sure we are talking to lcd
+	lcd_window(px,py,hx,hy); // window 
+	lcd_command(CMD_RAMWR); // write pixels
+	nrf_gpio_pin_write(LCD_COMMAND,1); // data
+
+	// state passed into lcd_shader_transfer by pointers
+	int d1=0;
+
+	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
+	{
+		int x=xy%hx;
+		int y=xy/hx;
+		if(xy==0) // first transfer is read only
+		{
+			d1=(*pixel)(x,y,data);												// get first pixel at start
+		}
+		else // other transfers
+		{
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)((d1>>16)&0xff);							// out
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;                    								// in
+
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)((d1>>8)&0xff);								// out
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;													// in
+
+			NRF_SPI0->EVENTS_READY=0;											// ready
+			NRF_SPI0->TXD=(uint32_t)((d1)&0xff);								// out
+			d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
+			r=NRF_SPI0->RXD;													// in
+		}
+	}
+}
+
+static int lcd_color_mode_value=0x444;
+
+// shade a rectangular area with a function
+void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
+{
+	switch(lcd_color_mode_value)
+	{
+		case 0x444:
+			lcd_shader_444(px,py,hx,hy,pixel,data);
+		break;
+		case 0x565:
+			lcd_shader_565(px,py,hx,hy,pixel,data);
+		break;
+		case 0x888:
+			lcd_shader_888(px,py,hx,hy,pixel,data);
+		break;
+	}
+}
+
+// set/get color mode values are : 0x444 , 0x565 , 0x888 or 0x000 to just read.
+int lcd_color_mode(int color_mode)
+{
+	switch(color_mode)
+	{
+		case 0x444:
+			lcd_command(CMD_COLMOD); lcd_data(0x53);
+			lcd_color_mode_value=0x444;
+		break;
+		case 0x565:
+			lcd_command(CMD_COLMOD); lcd_data(0x55);
+			lcd_color_mode_value=0x565;
+		break;
+		case 0x888:
+			lcd_command(CMD_COLMOD); lcd_data(0x66);
+			lcd_color_mode_value=0x888;
+		break;
+	}
+	return lcd_color_mode_value;
 }

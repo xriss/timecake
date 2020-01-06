@@ -11,7 +11,7 @@ static int shader_test(int x,int y,void *data)
 {
 	int d=*((int*)data);
 	int dd=d*d;
-	int r=0x000008;
+	int r=0x000010;
 	int cx=x-120;
 	int cy=y-120;
 	int cc=( cx*cx + cy*cy );
