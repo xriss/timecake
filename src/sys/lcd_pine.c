@@ -161,49 +161,6 @@ static inline void lcd_window(int px,int py,int hx,int hy)
 	lcd_data_word((py+hy-1));
 }
 
-// shade a rectangular area with a function
-static inline void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
-{
-	lcd_window(px,py,hx,hy); // window 
-	lcd_command(CMD_RAMWR); // write pixels
-	nrf_gpio_pin_write(LCD_COMMAND,1); // data
-	volatile uint32_t r;
-	for(int y=py;y<py+hy;y++)
-	{
-		int d=(*pixel)(px,y,data);
-		for(int x=px;x<px+hx;x++)
-		{
-			NRF_SPI0->EVENTS_READY=0;           // ready
-			NRF_SPI0->TXD=(uint32_t)(d>>8);     // out
-			while(NRF_SPI0->EVENTS_READY==0){;} // wait
-			r=NRF_SPI0->RXD;                    // in
-
-			NRF_SPI0->EVENTS_READY=0;           // ready
-			NRF_SPI0->TXD=(uint32_t)d;          // out
-			d=(*pixel)(x+1,y,data);             // fetch next pixel color while we are waiting
-			while(NRF_SPI0->EVENTS_READY==0){;} // wait
-			r=NRF_SPI0->RXD;                    // in
-		}
-	}
-}
-
-
-static int shade_test(int x,int y,void *data)
-{
-	int d=*((int*)data);
-	int dd=d*d;
-	int r=0x0000;
-	int cx=x-120;
-	int cy=y-120;
-	int cc=( cx*cx + cy*cy );
-	if( cc < dd )
-	{
-		r=((cc<<11)/dd)&0x07e0;
-	}
-	return r;
-}
-
-
 /*
 
 setup all LCD related stuff
@@ -269,13 +226,8 @@ int lcd_setup(void)
 	lcd_command(CMD_NORON);
 	lcd_command(CMD_DISPON);
 	
-
-	int j=1;
-	for(int i=0;i<120;i+=j)
-	{
-		j=j+1;
-		lcd_shader(0,0,240,240,shade_test,&i);
-	}
+	int c=0x0000;
+	lcd_shader(0,0,240,240,lcd_shader_color,&c);
 	
 	// finish sending commands
 	lcd_transfer_clean();
@@ -322,3 +274,35 @@ int lcd_backlight(int bright)
 	return 0;
 }
 
+int lcd_shader_color(int x,int y,void *data)
+{
+	int d=*((int*)data);
+	return d;
+}
+
+// shade a rectangular area with a function
+void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),void *data)
+{
+	nrf_gpio_pin_write(LCD_SELECT,0); // make sure we are talking to lcd
+	lcd_window(px,py,hx,hy); // window 
+	lcd_command(CMD_RAMWR); // write pixels
+	nrf_gpio_pin_write(LCD_COMMAND,1); // data
+	volatile uint32_t r;
+	for(int y=py;y<py+hy;y++)
+	{
+		int d=(*pixel)(px,y,data);
+		for(int x=px;x<px+hx;x++)
+		{
+			NRF_SPI0->EVENTS_READY=0;           // ready
+			NRF_SPI0->TXD=(uint32_t)(d>>8);     // out
+			while(NRF_SPI0->EVENTS_READY==0){;} // wait
+			r=NRF_SPI0->RXD;                    // in
+
+			NRF_SPI0->EVENTS_READY=0;           // ready
+			NRF_SPI0->TXD=(uint32_t)d;          // out
+			d=(*pixel)(x+1,y,data);             // fetch next pixel color while we are waiting
+			while(NRF_SPI0->EVENTS_READY==0){;} // wait
+			r=NRF_SPI0->RXD;                    // in
+		}
+	}
+}
