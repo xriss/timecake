@@ -226,7 +226,7 @@ int lcd_setup(void)
 	lcd_command(CMD_NORON);
 	lcd_command(CMD_DISPON);
 	
-	int c=0x0000;
+	int c=0x000000;
 	lcd_shader(0,0,240,240,lcd_shader_color,&c);
 	
 	// finish sending commands
@@ -294,12 +294,12 @@ void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),
 		for(int x=px;x<px+hx;x++)
 		{
 			NRF_SPI0->EVENTS_READY=0;           // ready
-			NRF_SPI0->TXD=(uint32_t)(d>>8);     // out
+			NRF_SPI0->TXD=(uint32_t)(((d>>16)&0xf8)|((d>>13)&0x07));     // out
 			while(NRF_SPI0->EVENTS_READY==0){;} // wait
 			r=NRF_SPI0->RXD;                    // in
 
 			NRF_SPI0->EVENTS_READY=0;           // ready
-			NRF_SPI0->TXD=(uint32_t)d;          // out
+			NRF_SPI0->TXD=(uint32_t)(((d>>3)&0x1f)|((d>>5)&0x70));          // out
 			d=(*pixel)(x+1,y,data);             // fetch next pixel color while we are waiting
 			while(NRF_SPI0->EVENTS_READY==0){;} // wait
 			r=NRF_SPI0->RXD;                    // in
