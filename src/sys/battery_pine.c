@@ -9,7 +9,7 @@
 
 #define BATTERY_CHARGE  12
 #define BATTERY_POWER   19
-#define BATTERY_VOLTAGE 31
+#define BATTERY_VOLTAGE SAADC_CH_PSELP_PSELP_AnalogInput7
 
 /*
 
@@ -52,8 +52,8 @@ void battery_read(int *flags,float *voltage,float *percent)
 								(SAADC_CH_CONFIG_TACQ_3us        << SAADC_CH_CONFIG_TACQ_Pos);
 
 	// Configure the SAADC channel with VDD as positive input, no negative input(single ended).
-	NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD << SAADC_CH_PSELP_PSELP_Pos;
-//	NRF_SAADC->CH[0].PSELP = BATTERY_VOLTAGE << SAADC_CH_PSELP_PSELP_Pos;
+//	NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD << SAADC_CH_PSELP_PSELP_Pos;
+	NRF_SAADC->CH[0].PSELP = BATTERY_VOLTAGE << SAADC_CH_PSELP_PSELP_Pos;
 	NRF_SAADC->CH[0].PSELN = SAADC_CH_PSELN_PSELN_NC << SAADC_CH_PSELN_PSELN_Pos;
 
 	// Configure the SAADC resolution.
@@ -89,8 +89,8 @@ void battery_read(int *flags,float *voltage,float *percent)
 	// Result = [V(p) - V(n)] * GAIN/REFERENCE * 2^(RESOLUTION)
 	// Result = (VDD - 0) * ((1/6) / 0.6) * 2^14
 	// VDD = Result / 4551.1
-	precise_result = (float)result / 4551.1f;
-//	precise_result = (float)result / 5461.3f;
+//	precise_result = (float)result / 4551.1f;
+	precise_result = (float)result / (4551.1f/2.0f);
 
 	// Stop the SAADC, since it's not used anymore.
 	NRF_SAADC->TASKS_STOP = 1;
@@ -99,8 +99,9 @@ void battery_read(int *flags,float *voltage,float *percent)
   
 	*voltage = precise_result;
 
-	// voltage falls from 4v to 3v ish with a sharp fall off after 3.5v
-	*percent = ((precise_result - 3.0f)*100.0f)/(4.0f-3.0f);
+	// see https://forum.pine64.org/showthread.php?tid=8147
+	// voltage falls from around 3.9v to 3v ish with a sharp fall off after 3.5v
+	*percent = ((precise_result - 3.0f)*100.0f)/(3.9f-3.0f);
 	if(*percent<=50.0f) // 0% to 10%
 	{
 		*percent=*percent/5.0f; 
