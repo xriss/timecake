@@ -11,17 +11,40 @@
 #include "sys/lcd.h"
 
 
-static int shader_test(int x,int y,void *data)
+static char text[32*16];
+static struct shader_font lines[16];
+
+static int shader_test(int _x,int _y,void *data)
 {
-	int d=*((int*)data);
-	int dd=d*d;
-	int r=0x000010;
-	int cx=x-120;
-	int cy=y-120;
-	int cc=( cx*cx + cy*cy );
-	if( cc < dd )
+	int x=239-_y; // rotate screen
+	int y=_x;
+
+	int r=-1; // background flag
+
+	int ty=(y/16)&0xf; // 0-15 line
+	struct shader_font *line=lines+ty;
+	if(line->length>0) // render some text
 	{
-		r=(0x00ff00-(((cc<<16)/dd)&0x00ff00))|0xff0000;
+		r=shader_textline(x,y,line);
+	}
+
+	
+	if(r==-1) // fill background with simple animation
+	{
+		int d=*((int*)data);
+		int dd=d*d;
+		int cx=x-120;
+		int cy=y-120;
+		int cc=( cx*cx + cy*cy );
+		if( cc < dd )
+		{
+			r=(0x00ff00-(((cc<<16)/dd)&0x00ff00))|0xff0000;
+		}
+		else
+		{
+			r=0x000010;
+		}
+
 	}
 	return r;
 }
@@ -29,20 +52,27 @@ static int shader_test(int x,int y,void *data)
 
 int main(void)
 {
-
+	int idx;
+	
 	battery_setup();
 	lcd_setup();
-
-	char text[30];
-	struct shader_font line[1];
 	
-	line->name=funfont_8x16r;
-	line->hx=8;
-	line->hy=16;
-	line->foreground=0xffffff;
-	line->background=0x000010;
-	line->ax=0;line->mx=1;line->dx=2;
-	line->ay=0;line->my=1;line->dy=2;
+	// setup text screen buffers for a 30x15 character display.
+	for(idx=0;idx<16;idx++)
+	{
+		lines[idx].name=funfont_8x16r;
+		lines[idx].hx=8;
+		lines[idx].hy=16;
+		lines[idx].foreground=0xffffff;
+		lines[idx].background=-1; // transparent
+		lines[idx].ax=0;lines[idx].mx=1;lines[idx].dx=1;
+		lines[idx].ay=0;lines[idx].my=1;lines[idx].dy=1;
+		
+		lines[idx].ay=-(idx*16);
+
+		lines[idx].text=text+(idx*32); // 32 char buffers per line (30 visible with 8x16 font)
+		lines[idx].length=0;
+	}
 
 	int i=1;
 	int j=1;
@@ -72,58 +102,23 @@ int main(void)
 		}
 		else
 		{
-			lcd_shader(0,32+16,240,240-32-16,shader_test,&i);
-
-
-/*
-			snprintf(text,30,"Hello World!");
-			line->text=text;
-			line->length=strlen(line->text);
-			line->ay=0;
-			line->dx=2;
-			line->dy=2;
-
-			lcd_shader(0,0 ,240,32    ,shader_textline,line);
-*/
-
 			int flags;
 			float voltage;
 			float percent;
 			battery_read(&flags,&voltage,&percent);
 
-			snprintf(text,30,"%d.%03dv %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
-			line->text=text;
-			line->length=strlen(line->text);
-			line->ay=0;
-			line->dx=2;
-			line->dy=2;
-
-			lcd_shader(0,0 ,240,32    ,shader_textline,line);
-
-
 			time_t t = time(NULL);
 			struct tm *tm = localtime(&t);
-    
-			snprintf(text,30,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
-			line->text=text;
-			line->length=strlen(line->text);
-			line->ay=-32;
-			line->dx=1;
-			line->dy=1;
 
-			lcd_shader(0,32 ,240,16    ,shader_textline,line);
-    
+			snprintf(lines[0].text,32,"Hello World!");
+			snprintf(lines[1].text,32,"Battery : %d.%03dv : %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
+			snprintf(lines[2].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
+
+			for(idx=0;idx<16;idx++) { lines[idx].length=strlen(lines[idx].text); }
+
+			lcd_shader(0,0,240,240,shader_test,&i);
     
 		}
-		
-/*
-		for(int i=0;i<256;i++)
-		{
-			int d=i>128?256-i:i;
-			lcd_backlight(d+64+32);
-			nrf_delay_ms(10);
-		}
-*/
 
 	}
 
