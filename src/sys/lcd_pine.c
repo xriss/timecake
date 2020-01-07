@@ -144,7 +144,7 @@ static inline int lcd_data(int t)
 // send a data word
 static inline void lcd_data_word(int t)
 {
-	nrf_gpio_pin_write(LCD_COMMAND,0);
+	nrf_gpio_pin_write(LCD_COMMAND,1);
 	lcd_transfer(t>>8);
 	lcd_transfer(t&0xff);
 }
@@ -289,8 +289,8 @@ static void lcd_shader_565(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 
 	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
 	{
-		int x=xy%hx;
-		int y=xy/hx;
+		int x=px+(xy%hx);
+		int y=py+(xy/hx);
 		if(xy==0) // first transfer is read only
 		{
 			d1=(*pixel)(x,y,data);												// get first pixel at start
@@ -327,8 +327,8 @@ static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 
 	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
 	{
-		int x=xy%hx;
-		int y=xy/hx;
+		int x=px+(xy%hx);
+		int y=py+(xy/hx);
 		if(xy&1) // odd
 		{
 			NRF_SPI0->EVENTS_READY=0;											// ready
@@ -375,8 +375,8 @@ static void lcd_shader_888(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 
 	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
 	{
-		int x=xy%hx;
-		int y=xy/hx;
+		int x=px+(xy%hx);
+		int y=py+(xy/hx);
 		if(xy==0) // first transfer is read only
 		{
 			d1=(*pixel)(x,y,data);												// get first pixel at start

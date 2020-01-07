@@ -21,3 +21,22 @@ extern void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void 
 // set every pixel to the color in data
 extern int lcd_shader_color(int x,int y,void *data);
 
+// font structure
+
+struct shader_font {
+	void * name;       // required pointer to font data
+	int    hx,hy;      // width and height of each glyph
+	int    foreground; // foreground color
+	int    background; // background color
+	int    length;     // the length of text
+	char * text;       // the string of text to render
+	int    ax,mx,dx;   // x=((x+ax)*mx)/dx
+	int    ay,my,dy;   // y=((y+ay)*my)/dy
+};
+
+// font names
+extern const unsigned char funfont_4x8b[];
+extern const unsigned short funfont_8x16r[];
+
+// text shaders
+extern int shader_textline(int x,int y,struct shader_font *data);

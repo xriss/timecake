@@ -28,6 +28,17 @@ int main(void)
 
 	lcd_setup();
 
+	struct shader_font line[1];
+	
+	line->name=funfont_8x16r;
+	line->hx=8;
+	line->hy=16;
+	line->foreground=0xffffff;
+	line->background=0x000010;
+	line->text="Hello World!";
+	line->length=strlen(line->text);
+	line->ax=0;line->mx=1;line->dx=2;
+	line->ay=0;line->my=1;line->dy=2;
 
 	int i=1;
 	int j=1;
@@ -57,7 +68,8 @@ int main(void)
 		}
 		else
 		{
-			lcd_shader(0,0,240,240,shader_test,&i);
+			lcd_shader(0,32,240,240-32,shader_test,&i);
+			lcd_shader(0,0 ,240,32    ,shader_textline,line);
 		}
 		
 /*
