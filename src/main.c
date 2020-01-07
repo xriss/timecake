@@ -1,4 +1,5 @@
 
+#include <time.h>
 #include <string.h>
 
 #include "nrf.h"
@@ -71,9 +72,10 @@ int main(void)
 		}
 		else
 		{
-			lcd_shader(0,64,240,240-32-32,shader_test,&i);
+			lcd_shader(0,32+16,240,240-32-16,shader_test,&i);
 
 
+/*
 			snprintf(text,30,"Hello World!");
 			line->text=text;
 			line->length=strlen(line->text);
@@ -82,6 +84,7 @@ int main(void)
 			line->dy=2;
 
 			lcd_shader(0,0 ,240,32    ,shader_textline,line);
+*/
 
 			int flags;
 			float voltage;
@@ -91,12 +94,26 @@ int main(void)
 			snprintf(text,30,"%d.%03dv %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
 			line->text=text;
 			line->length=strlen(line->text);
-			line->ay=-32;
+			line->ay=0;
 			line->dx=2;
 			line->dy=2;
 
-			lcd_shader(0,32 ,240,32    ,shader_textline,line);
+			lcd_shader(0,0 ,240,32    ,shader_textline,line);
 
+
+			time_t t = time(NULL);
+			struct tm *tm = localtime(&t);
+    
+			snprintf(text,30,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
+			line->text=text;
+			line->length=strlen(line->text);
+			line->ay=-32;
+			line->dx=1;
+			line->dy=1;
+
+			lcd_shader(0,32 ,240,16    ,shader_textline,line);
+    
+    
 		}
 		
 /*
