@@ -100,15 +100,15 @@ void battery_read(int *flags,float *voltage,float *percent)
 	*voltage = precise_result;
 
 	// see https://forum.pine64.org/showthread.php?tid=8147
-	// voltage falls from around 3.9v to 3v ish with a sharp fall off after 3.5v
+	// voltage falls from around 3.9v to 3v ish with a sharp fall off after 3.55v
 	*percent = ((precise_result - 3.0f)*100.0f)/(3.9f-3.0f);
-	if(*percent<=50.0f) // 0% to 10%
+	if(*percent<=60.0f) // 0% to 10% : 3.0v to 3.54v
 	{
-		*percent=*percent/5.0f; 
+		*percent=*percent/6.0f; 
 	}
-	else // 10% to 100%
+	else // 10% to 100% : 3.54v to 3.9v
 	{
-		*percent=10.0f+((*percent-50.0f)*(2.0f*0.9f));
+		*percent=10.0f+((*percent-60.0f)*(90.0f/40.0f));
 	}
 	// sanity clamp
 	if(*percent<0.0f) { *percent=0.0f; }
