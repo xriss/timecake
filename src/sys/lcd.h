@@ -24,7 +24,7 @@ extern int lcd_shader_color(int x,int y,void *data);
 // font structure
 
 struct shader_font {
-	void * name;       // required pointer to font data
+	const void * name; // required pointer to font data
 	int    hx,hy;      // width and height of each glyph
 	int    foreground; // foreground color
 	int    background; // background color

@@ -35,6 +35,9 @@ list(APPEND SOURCE_FILES
   sys/lcd_font.c
   sys/lcd.c
 
+  sys/battery_pine.c
+  sys/battery.c
+
   main.c
 
 )
