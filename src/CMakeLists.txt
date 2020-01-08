@@ -38,6 +38,11 @@ list(APPEND SOURCE_FILES
   sys/battery_pine.c
   sys/battery.c
 
+  sys/i2c_pine.c
+  sys/acc_pine.c
+  sys/heart_pine.c
+  sys/touch_pine.c
+
   main.c
 
 )

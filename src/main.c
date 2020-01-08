@@ -7,6 +7,9 @@
 #include "nrf_delay.h"
 
 
+#include "sys/acc.h"
+#include "sys/heart.h"
+#include "sys/touch.h"
 #include "sys/battery.h"
 #include "sys/lcd.h"
 
@@ -54,6 +57,9 @@ int main(void)
 {
 	int idx;
 	
+	acc_setup();
+	heart_setup();
+	touch_setup();
 	battery_setup();
 	lcd_setup();
 	
@@ -109,11 +115,16 @@ int main(void)
 
 			time_t t = time(NULL);
 			struct tm *tm = localtime(&t);
+			
+			unsigned char * acc=acc_read();
 
 			snprintf(lines[0].text,32,"Hello World!");
 			snprintf(lines[1].text,32,"Battery : %d.%03dv : %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
 			snprintf(lines[2].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
 			snprintf(lines[3].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
+
+			snprintf(lines[4].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[0],acc[1],acc[2],acc[3],acc[4],acc[5],acc[6],acc[7] );
+			snprintf(lines[5].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[8],acc[9],acc[10],acc[11],acc[12],acc[13],acc[14],acc[15] );
 
 			for(idx=0;idx<16;idx++) { lines[idx].length=strlen(lines[idx].text); }
 

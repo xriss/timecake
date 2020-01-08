@@ -9,4 +9,7 @@
 
 int touch_setup(void)
 {
+	i2c_setup(); // this will may called multiple times
+	
+	return 0;
 }

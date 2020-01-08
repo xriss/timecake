@@ -210,7 +210,7 @@ int lcd_setup(void)
 
 	// sleep off
 	lcd_command(CMD_SLPOUT);
-		
+			
 	// select 444 pixel format (Which is fastest to write)
 	lcd_color_mode(0x444);
 
@@ -222,6 +222,8 @@ int lcd_setup(void)
 	lcd_command(CMD_INVON);
 	lcd_command(CMD_NORON);
 	lcd_command(CMD_DISPON);
+
+	lcd_backlight(0xff);
 	
 	// finish sending commands
 	lcd_transfer_clean();
@@ -301,12 +303,14 @@ static void lcd_shader_565(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 			NRF_SPI0->TXD=(uint32_t)(((d1>>16)&0xf8)|((d1>>13)&0x07));			// out
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;                    								// in
+			r;//hush
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)(((d1>>3)&0x1f)|((d1>>5)&0x70));			// out
 			d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
+			r;//hush
 		}
 	}
 }
@@ -336,11 +340,13 @@ static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 			d2=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;                    								// in
+			r;//hush
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)(((d1)&0xf0)|((d2>>20)&0x0f));			// out
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
+			r;//hush
 		}
 		else // even
 		{
@@ -355,6 +361,7 @@ static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 				d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
 				while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 				r=NRF_SPI0->RXD;													// in
+				r;//hush
 			}
 		}
 	}
@@ -387,17 +394,20 @@ static void lcd_shader_888(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 			NRF_SPI0->TXD=(uint32_t)((d1>>16)&0xff);							// out
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;                    								// in
+			r;//hush
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)((d1>>8)&0xff);								// out
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
+			r;//hush
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)((d1)&0xff);								// out
 			d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
+			r;//hush
 		}
 	}
 }
