@@ -1,6 +1,9 @@
 
 // pine battery code
 
+// https://github.com/andenore/NordicSnippets/blob/master/examples/saadc
+
+
 #include "battery.h"
 
 #include <nrf.h>
@@ -9,7 +12,7 @@
 
 #define BATTERY_CHARGE  12
 #define BATTERY_POWER   19
-#define BATTERY_VOLTAGE SAADC_CH_PSELP_PSELP_AnalogInput7
+#define BATTERY_HALF_VOLTAGE SAADC_CH_PSELP_PSELP_AnalogInput7
 
 /*
 
@@ -53,7 +56,7 @@ void battery_read(int *flags,float *voltage,float *percent)
 
 	// Configure the SAADC channel with VDD as positive input, no negative input(single ended).
 //	NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD << SAADC_CH_PSELP_PSELP_Pos;
-	NRF_SAADC->CH[0].PSELP = BATTERY_VOLTAGE << SAADC_CH_PSELP_PSELP_Pos;
+	NRF_SAADC->CH[0].PSELP = BATTERY_HALF_VOLTAGE << SAADC_CH_PSELP_PSELP_Pos;
 	NRF_SAADC->CH[0].PSELN = SAADC_CH_PSELN_PSELN_NC << SAADC_CH_PSELN_PSELN_Pos;
 
 	// Configure the SAADC resolution.
@@ -100,15 +103,15 @@ void battery_read(int *flags,float *voltage,float *percent)
 	*voltage = precise_result;
 
 	// see https://forum.pine64.org/showthread.php?tid=8147
-	// voltage falls from around 3.9v to 3v ish with a sharp fall off after 3.55v
-	*percent = ((precise_result - 3.0f)*100.0f)/(3.9f-3.0f);
-	if(*percent<=60.0f) // 0% to 10% : 3.0v to 3.54v
+	// voltage falls from around 3.9v to 2.9v ish with a sharp fall off after 3.4v
+	*percent = ((precise_result - 2.9f)*100.0f)/(3.9f-2.9f);
+	if(*percent<=50.0f) // 0% to 10% : 2.9v to 3.4v
 	{
-		*percent=*percent/6.0f; 
+		*percent=*percent/5.0f; 
 	}
-	else // 10% to 100% : 3.54v to 3.9v
+	else // 10% to 100% : 3.4v to 3.9v
 	{
-		*percent=10.0f+((*percent-60.0f)*(90.0f/40.0f));
+		*percent=10.0f+((*percent-50.0f)*(90.0f/50.0f));
 	}
 	// sanity clamp
 	if(*percent<0.0f) { *percent=0.0f; }

@@ -112,7 +112,8 @@ int main(void)
 
 			snprintf(lines[0].text,32,"Hello World!");
 			snprintf(lines[1].text,32,"Battery : %d.%03dv : %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
-			snprintf(lines[2].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
+			snprintf(lines[2].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
+			snprintf(lines[3].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
 
 			for(idx=0;idx<16;idx++) { lines[idx].length=strlen(lines[idx].text); }
 
