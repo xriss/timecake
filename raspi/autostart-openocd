@@ -1,0 +1,11 @@
+cd `dirname $0`
+. ./box-settings
+
+./box-mount
+
+echo " autostart openocd "
+cp swd.boot.sh root/home/pi/swd.boot.sh
+chmod +x root/home/pi/swd.boot.sh
+
+./box-umount
+
