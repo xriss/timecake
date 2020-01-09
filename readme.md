@@ -46,13 +46,16 @@ Hope this helps, but remember it is all just notes as I go...
 PINEWATCH FEATURES WORKING
 --------------------------
 
-- [x] Simple Build
-- [x] GDB connect
+- [x] Remote Build
+- [ ] Local build 
+- [x] Remote GDB
 - [x] LCD
 - [x] Battery
 - [ ] Time
-- [ ] Touch
 - [ ] Accelerometer
+- [ ] Touch
+- [ ] Button
+- [ ] Buzz
 - [ ] Heart
 - [ ] Storage
 - [ ] BlueTooth
