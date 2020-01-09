@@ -71,6 +71,7 @@ int main(void)
 		lines[idx].hx=8;
 		lines[idx].hy=16;
 		lines[idx].foreground=0xffffff;
+		lines[idx].dropshadow=0x000000;
 		lines[idx].background=-1; // transparent
 		lines[idx].ax=0;lines[idx].mx=1;lines[idx].dx=1;
 		lines[idx].ay=0;lines[idx].my=1;lines[idx].dy=1;

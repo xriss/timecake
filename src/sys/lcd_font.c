@@ -225,6 +225,8 @@ int shader_textline(int x,int y,struct shader_font *data)
 			code=data->text[cx];
 			bits=((const char *)data->name)[ (code-32)*4 + px ];
 			if( bits & ( 1 << (7-y) ) ) { return data->foreground; }
+			bits=((const char *)data->name)[ (code-32)*4 + px - 1 ];
+			if( bits & ( 1 << (6-y) ) ) { return data->dropshadow; }
 			return data->background;
 		break;
 
@@ -235,6 +237,8 @@ int shader_textline(int x,int y,struct shader_font *data)
 			code=data->text[cx];
 			bits=((const short *)data->name)[ (code-32)*8 + px ];
 			if( bits & ( 1 << (15-y) ) ) { return data->foreground; }
+			bits=((const short *)data->name)[ (code-32)*8 + px - 1 ];
+			if( bits & ( 1 << (14-y) ) ) { return data->dropshadow; }
 			return data->background;
 		break;
 	}

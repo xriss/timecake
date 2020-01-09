@@ -27,6 +27,7 @@ struct shader_font {
 	const void * name; // required pointer to font data
 	int    hx,hy;      // width and height of each glyph
 	int    foreground; // foreground color
+	int    dropshadow; // dropshadow color
 	int    background; // background color
 	int    length;     // the length of text
 	char * text;       // the string of text to render
