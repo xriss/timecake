@@ -6,5 +6,5 @@ echo
 rm -rf out
 mkdir out
 cd out
-cmake .. -LH $*
+cmake .. -D CMAKE_BUILD_TYPE=Release -LH $*
 

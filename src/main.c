@@ -64,7 +64,7 @@ int main(void)
 	battery_setup();
 	lcd_setup();
 
-printf("Testing!!!\n");
+printf("Testing %f!!!\n",1.9f);
 	
 	// setup text screen buffers for a 30x15 character display.
 	for(idx=0;idx<16;idx++)

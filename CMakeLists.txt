@@ -8,9 +8,9 @@ include("timecake.cmake")
 
 
 if(SEMIHOSTING)
-	set(SPECS_LINKER_FLAGS " --specs=rdimon.specs " )
+	set(SPECS_LINKER_FLAGS " --specs=rdimon.specs -u _printf_float " )
 else()
-	set(SPECS_LINKER_FLAGS " --specs=nano.specs -lnosys " )
+	set(SPECS_LINKER_FLAGS " --specs=nano.specs -lnosys -u _printf_float " )
 endif()
 
 
