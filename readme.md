@@ -7,6 +7,8 @@ UNDER CONSTRUCTION ALL WORDS ARE LIES
 ![construction](https://media.giphy.com/media/WrOweqqiDcvoQszeSu/giphy.gif)
 
 
+My plan is to get as far as some sort of watch display so far it looks 
+like we can do most things at the hardware level.
 
 See raspi directory for scripts to build an sd card image to run on a 
 PI. Or check github releases for an sd card image you could just 
@@ -16,8 +18,7 @@ This PI is then used as a programmer for the pinetime connected to the
 GPIO pins and to a network so we can squirt code across remotely.
 
 
-To build code, My plan is to get as far as some sort of watch display 
-so far it looks like we can do most things at the hardware level.
+To build the code.
 
 
 1. `./apts.sh`
@@ -29,9 +30,9 @@ so far it looks like we can do most things at the hardware level.
 4. `./make.sh`
     * Compile and link in ./out/
 5. `./gdb.sh`
-    * Start gdb connected to OpenOCD and squirt code across
+    * Start gdb connect to OpenOCD and squirt code across
 6. `./run.sh`
-    * Start gdb connected to OpenOCD and squirt code across and then exit gdb
+    * Start gdb connect to OpenOCD and squirt code across and then exit gdb
 
 
 You will need to fix the IP of the PI found in ./gdb.gdb as right now 
