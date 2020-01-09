@@ -1,1 +1,0 @@
-../nr5sdk/config/nrf52832/config/sdk_config.h

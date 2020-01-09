@@ -112,19 +112,43 @@ int main(void)
 			float voltage;
 			float percent;
 			battery_read(&flags,&voltage,&percent);
+			char * charging="    ";
+//			if(flags==2) { charging="===="; } // Charged (never reaches this state?)
+//			else
+			if(flags&1) // Charging
+			{
+				switch(i&3) // animate
+				{
+					case 0: charging="+   "; break;
+					case 1: charging="++  "; break;
+					case 2: charging="+++ "; break;
+					case 3: charging="++++"; break;
+				}
+			}
+			else // Discharging
+			{
+				switch(i&3) // animate
+				{
+					case 0: charging="----"; break;
+					case 1: charging="--- "; break;
+					case 2: charging="--  "; break;
+					case 3: charging="-   "; break;
+				}
+			}
 
 			time_t t = time(NULL);
 			struct tm *tm = localtime(&t);
 			
 			unsigned char * acc=acc_read();
 
-			snprintf(lines[0].text,32,"Hello World!");
-			snprintf(lines[1].text,32,"Battery : %d.%03dv : %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
-			snprintf(lines[2].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
-			snprintf(lines[3].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
+			idx=0;
+//			snprintf(lines[idx++].text,32,"Hello World!");
+			snprintf(lines[idx++].text,32,"Battery : %d.%03dv : %3d%% %s",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent,charging);
+			snprintf(lines[idx++].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
+			snprintf(lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
 
-			snprintf(lines[4].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[0],acc[1],acc[2],acc[3],acc[4],acc[5],acc[6],acc[7] );
-			snprintf(lines[5].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[8],acc[9],acc[10],acc[11],acc[12],acc[13],acc[14],acc[15] );
+			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[0],acc[1],acc[2],acc[3],acc[4],acc[5],acc[6],acc[7] );
+			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[8],acc[9],acc[10],acc[11],acc[12],acc[13],acc[14],acc[15] );
 
 			for(idx=0;idx<16;idx++) { lines[idx].length=strlen(lines[idx].text); }
 
