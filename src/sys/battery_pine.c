@@ -24,23 +24,6 @@ int battery_setup(void)
 	nrf_gpio_cfg_input(BATTERY_CHARGE, (nrf_gpio_pin_pull_t)GPIO_PIN_CNF_PULL_Pullup);
 	nrf_gpio_cfg_input(BATTERY_POWER, (nrf_gpio_pin_pull_t)GPIO_PIN_CNF_PULL_Pullup);
 
-	return 0;
-}
-
-/*
-
-read the current settings from the battery
-
-*/
-void battery_read(int *flags,float *voltage,float *percent)
-{
-	*flags=0;
-	if( !nrf_gpio_pin_read(BATTERY_CHARGE) ) { *flags|=1; }
-	if( !nrf_gpio_pin_read(BATTERY_POWER) )  { *flags|=2; }
-
-	volatile int16_t result = 0;
-	volatile float precise_result = 0;
-
 	// Start HFCLK from crystal oscillator, this will give the SAADC higher accuracy
 	NRF_CLOCK->TASKS_HFCLKSTART = 1;
 	while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
@@ -62,21 +45,51 @@ void battery_read(int *flags,float *voltage,float *percent)
 	// Configure the SAADC resolution.
 	NRF_SAADC->RESOLUTION = SAADC_RESOLUTION_VAL_14bit << SAADC_RESOLUTION_VAL_Pos;
 
-	// Configure result to be put in RAM at the location of "result" variable.
-	NRF_SAADC->RESULT.MAXCNT = 1;
-	NRF_SAADC->RESULT.PTR = (uint32_t)&result;
-
 	// No automatic sampling, will trigger with TASKS_SAMPLE.
 	NRF_SAADC->SAMPLERATE = SAADC_SAMPLERATE_MODE_Task << SAADC_SAMPLERATE_MODE_Pos;
 
 	// Enable SAADC (would capture analog pins if they were used in CH[0].PSELP)
 	NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Enabled << SAADC_ENABLE_ENABLE_Pos;
 
-	// Calibrate the SAADC (only needs to be done once in a while)
+
+
+// Calibrate the SAADC (only needs to be done once in a while)
 	NRF_SAADC->TASKS_CALIBRATEOFFSET = 1;
 	while (NRF_SAADC->EVENTS_CALIBRATEDONE == 0);
 	NRF_SAADC->EVENTS_CALIBRATEDONE = 0;
 	while (NRF_SAADC->STATUS == (SAADC_STATUS_STATUS_Busy <<SAADC_STATUS_STATUS_Pos));
+
+	return 0;
+}
+
+
+
+/*
+
+read the current settings from the battery
+
+	(flags & 1) == CHARGE
+	(flags & 2) == POWER
+
+I assumed charge false and power true , would mean we have finished 
+charging. Please be aware that we never seem to reach that state so 
+best to ignore the power flag and just look as the charge flag.
+
+
+
+*/
+void battery_read(int *flags,float *voltage,float *percent)
+{
+	*flags=0;
+	if( !nrf_gpio_pin_read(BATTERY_CHARGE) ) { *flags|=1; }
+	if( !nrf_gpio_pin_read(BATTERY_POWER) )  { *flags|=2; }
+
+	volatile int16_t result = 0;
+	volatile float precise_result = 0;
+
+	// Configure result to be put in RAM at the location of "result" variable.
+	NRF_SAADC->RESULT.MAXCNT = 1;
+	NRF_SAADC->RESULT.PTR = (uint32_t)&result;
 
 	// Start the SAADC and wait for the started event.
 	NRF_SAADC->TASKS_START = 1;
