@@ -20,7 +20,13 @@ int acc_setup(void)
 
 unsigned char * acc_read(void)
 {
-	i2c_read(ACC_I2C_DEVICE,128,0,acc_data);
+/*
+	acc_data[0]=0x2D;
+	acc_data[1]=0x08;
+	i2c_write(ACC_I2C_DEVICE,1,acc_data);
+*/
+	
+	i2c_read(ACC_I2C_DEVICE,0,128,acc_data);
 	
 	return acc_data;
 }

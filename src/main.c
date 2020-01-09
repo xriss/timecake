@@ -140,7 +140,7 @@ int main(void)
 			time_t t = time(NULL);
 			struct tm *tm = localtime(&t);
 			
-			unsigned char * acc=acc_read();
+			unsigned char * acc=touch_read();
 
 			idx=0;
 //			snprintf(lines[idx++].text,32,"Hello World!");

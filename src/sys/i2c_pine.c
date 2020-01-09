@@ -42,7 +42,7 @@ void i2c_write(int device,int length,uint8_t *data)
 
 }
 
-void i2c_read(int device,int length,int address,uint8_t *data)
+void i2c_read(int device,int address,int length,uint8_t *data)
 {
 	uint8_t tx_buf[1];
 	NRF_TWIM1->SHORTS = TWIM_SHORTS_LASTTX_STARTRX_Msk | TWIM_SHORTS_LASTRX_STOP_Msk;
