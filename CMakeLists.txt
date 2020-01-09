@@ -1,10 +1,17 @@
 cmake_minimum_required(VERSION 3.12)
 
+option(SEMIHOSTING "enable printf output !WARNING! code will only run with gdb" )
 
-
+ 
 include("timecake.cmake")
 
 
+
+if(SEMIHOSTING)
+	set(SPECS_LINKER_FLAGS " --specs=rdimon.specs " )
+else()
+	set(SPECS_LINKER_FLAGS " --specs=nano.specs -lnosys " )
+endif()
 
 
 include_directories(
@@ -106,7 +113,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
     set(CMAKE_ASM_FLAGS "-MP -MD -std=c99 -x assembler-with-cpp")
-    set(CMAKE_EXE_LINKER_FLAGS "-mthumb -mabi=aapcs -std=gnu++98 -std=c99 -L ${NRF5_SDK_PATH}/modules/nrfx/mdk -T${NRF5_LINKER_SCRIPT} ${CPU_FLAGS} -Wl,--gc-sections --specs=nano.specs -lc -lnosys -lm")
+    set(CMAKE_EXE_LINKER_FLAGS "-mthumb -mabi=aapcs -std=gnu++98 -std=c99 -L ${NRF5_SDK_PATH}/modules/nrfx/mdk -T${NRF5_LINKER_SCRIPT} ${CPU_FLAGS} -Wl,--gc-sections -lc -lm ${SPECS_LINKER_FLAGS}")
     # note: we must override the default cmake linker flags so that CMAKE_C_FLAGS are not added implicitly
     set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_COMPILER} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
     set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_C_COMPILER} <LINK_FLAGS> <OBJECTS> -lstdc++ -o <TARGET> <LINK_LIBRARIES>")

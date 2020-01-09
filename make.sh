@@ -1,3 +1,3 @@
 cd out
-make timecake
+make timecake $*
 
