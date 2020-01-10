@@ -30,13 +30,23 @@ To build the code.
 4. `./make.sh`
     * Compile and link in ./out/
 5. `./gdb.sh`
-    * Start gdb connect to OpenOCD and squirt code across
-6. `./run.sh`
-    * Start gdb connect to OpenOCD and squirt code across and then exit gdb
+    * Start gdb, connect to OpenOCD and squirt code across
 
+You will need to fix the IP of the PI found in `gdb.gdb` as right now 
+this is hardcoded so will only work for me.
 
-You will need to fix the IP of the PI found in ./gdb.gdb as right now 
-this is hardcoded and will only work for me.
+If that works you may also try building a semihosting version which 
+will only work while gdb is connected.
+
+1. `./cmake.sh -D SEMIHOSTING=ON`
+	* Enable semihosting (printf) to the openocd console
+2. `./make.sh`
+    * Compile and link in ./out/
+3. `./gdb.sh`
+    * Start gdb, connect to OpenOCD and squirt code across
+4. `ssh pi@10.42.0.xxx tail -f swd.log`
+	* View the printf output (this must be run in another console while gdb is still running)
+
 
 
 Hope this helps, but remember it is all just notes as I go...
@@ -47,10 +57,11 @@ PINEWATCH FEATURES WORKING
 --------------------------
 
 - [x] Remote Build
-- [ ] Local build 
+- [x] Remote printf (semihosting)
 - [x] Remote GDB
+- [ ] Local build 
 - [x] LCD
-- [x] Battery
+- [x] Battery percent
 - [ ] Time
 - [ ] Accelerometer
 - [ ] Touch
