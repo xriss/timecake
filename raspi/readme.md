@@ -22,13 +22,18 @@ Boot the pi. I personally prefer to plug in a network cable between my
 ubuntu laptop and the PI. I set the ethernet port to shared internet on 
 my laptop ( nm-connection-editor , wired connection , ipv4 ,  method = 
 shared to other computers ) and just use nmap to find the address the 
-pi got assigned.
+pi got assigned. Hopefully raspocd.local will ork as the 
+hostname, but you may need to just track down the IP and use that 
+instead.
 
-	sudo nmap -sS -p 22 10.42.0.0/24
+Check the PI is available
 
-In theory you can then
+	ping raspocd.local
+	nmap -v -T5 10.42.0.0/24 -oG - | grep Up	
 
-	telnet 10.42.0.xxx 4444
+In theory you can
+
+	telnet raspocd.local 4444
 
 and connect to a running OpenOCD server, the pi should continuously try 
 and connect using this script

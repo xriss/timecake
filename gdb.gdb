@@ -3,7 +3,7 @@ define hook-quit
     set confirm off
 end
 
-target remote 10.42.0.203:3333
+target remote raspocd.local:3333
 
 monitor reset halt
 

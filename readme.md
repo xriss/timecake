@@ -18,25 +18,28 @@ This PI is then used as a programmer for the pinetime connected to the
 GPIO pins and to a network so we can squirt code across remotely.
 
 
-To build the code.
-
+To prepare.
 
 1. `./apts.sh`
     * Install dependencies
 2. `./nr5sdk.sh`
     * Download SDK
-3. `./cmake.sh`
-    * Perform out of build cmake into ./out/
-4. `./make.sh`
-    * Compile and link in ./out/
-5. `./gdb.sh`
-    * Start gdb, connect to OpenOCD and squirt code across
 
-You will need to fix the IP of the PI found in `gdb.gdb` as right now 
-this is hardcoded so will only work for me.
+
+To build the code.
+
+
+1. `./cmake.sh`
+    * Perform out of build cmake, a clean project in ./out/ will be created
+2. `./make.sh`
+    * Compile and link in ./out/
+3. `./run.sh`
+    * Start gdb, connect to OpenOCD and squirt code across then exit.
+
 
 If that works you may also try building a semihosting version which 
 will only work while gdb is connected.
+
 
 1. `./cmake.sh -D SEMIHOSTING=ON`
 	* Enable semihosting (printf) to the openocd console
@@ -44,8 +47,11 @@ will only work while gdb is connected.
     * Compile and link in ./out/
 3. `./gdb.sh`
     * Start gdb, connect to OpenOCD and squirt code across
-4. `ssh pi@10.42.0.xxx tail -f swd.log`
-	* View the printf output (this must be run in another console while gdb is still running)
+
+...then in another console while gdb is still running...
+
+1. `./tail.sh`
+	* View the printf output (openocd logs) Note that gdb must still be connected or semihosting will fail.
 
 
 

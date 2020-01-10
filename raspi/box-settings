@@ -3,6 +3,10 @@
 PHANTOM_SIZE=3.6G
 
 
+# The hostname of the machine and filename of sd card image
+PHANTOM_NAME=raspocd
+
+
 # The name of the output sd card image
-PHANTOM_OUTPUT=raspocd.img
+PHANTOM_OUTPUT=${PHANTOM_NAME}.img
 

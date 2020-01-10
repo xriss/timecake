@@ -130,6 +130,10 @@ done
 echo " apply final resize of partition "
 ./ssh " sudo resize2fs /dev/sda2 "
 
+echo " set the name of this raspberry pi "
+./ssh " sudo hostnamectl set-hostname ${PHANTOM_NAME} "
+
+
 
 ./box-down
 
