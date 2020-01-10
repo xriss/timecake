@@ -15,7 +15,6 @@ int saveram_setup(void)
 	{
 		saveram_format();
 	}
-		saveram_format();
 	return 1;
 }
 
