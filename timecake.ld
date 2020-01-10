@@ -5,9 +5,18 @@ GROUP(-lgcc -lc -lnosys)
 
 MEMORY
 {
-  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x80000
-  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x0FC00
-  SRAM (rwx) : ORIGIN = 0x2000FC00, LENGTH = 0x00400
+	FLASH (rx)    : ORIGIN = 0x00000000, LENGTH = 0x80000
+	RAM (rwx)     : ORIGIN = 0x20000000, LENGTH = 0x0FF00
+	SAVERAM (rwx) : ORIGIN = 0x2000FF00, LENGTH = 0x00100
 }
 
+/* export saveram memory locations */
+
+saveram        = ORIGIN(SAVERAM);
+saveram_origin = ORIGIN(SAVERAM);
+saveram_length = LENGTH(RAM);
+
+
+
 INCLUDE "nrf_common.ld"
+

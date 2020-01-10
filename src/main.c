@@ -7,6 +7,9 @@
 #include "nrf_delay.h"
 
 
+#include "sys/debug.h"
+
+#include "sys/saveram.h"
 #include "sys/acc.h"
 #include "sys/heart.h"
 #include "sys/touch.h"
@@ -58,13 +61,15 @@ int main(void)
 	int idx;
 	int frame=0;
 	
+	saveram_setup();
+
 	acc_setup();
-//	heart_setup();
-//	touch_setup();
+	heart_setup();
+	touch_setup();
 	battery_setup();
 	lcd_setup();
 
-printf("Testing %f!!!\n",1.9f);
+PRINTF("Testing %f!!!\n",1.9f);
 	
 	// setup text screen buffers for a 30x15 character display.
 	for(idx=0;idx<16;idx++)
