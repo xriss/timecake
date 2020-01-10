@@ -7,6 +7,7 @@ inline void fakeprintf(char*f,...){}
 
 #else
 
+#include <stdio.h>
 #define PRINTF printf
 
 #endif
