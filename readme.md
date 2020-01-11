@@ -68,7 +68,7 @@ PINEWATCH FEATURES WORKING
 - [ ] Local build 
 - [x] LCD
 - [x] Battery percent
-- [ ] Time
+- [x] Time
 - [ ] Accelerometer
 - [ ] Touch
 - [ ] Button
