@@ -71,7 +71,7 @@ PINEWATCH FEATURES WORKING
 - [x] Time
 - [ ] Accelerometer
 - [ ] Touch
-- [ ] Button
+- [x] Button
 - [ ] Buzz
 - [ ] Heart
 - [ ] Storage
