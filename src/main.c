@@ -16,6 +16,7 @@
 #include "sys/battery.h"
 #include "sys/lcd.h"
 #include "sys/clock.h"
+#include "sys/button.h"
 
 // hardware reference manual
 // https://infocenter.nordicsemi.com/pdf/nRF52832_OPS_v0.6.3.pdf
@@ -73,6 +74,7 @@ int main(void)
 	battery_setup();
 	lcd_setup();
 	clock_setup();
+	button_setup();
 
 PRINTF("Testing %f!!!\n",1.9f);
 	
@@ -153,7 +155,10 @@ PRINTF("Testing %f!!!\n",1.9f);
 			time_t t = clock_read();
 			struct tm *tm = localtime(&t);
 			
-			unsigned char * acc=touch_read();
+//			unsigned char * acc=touch_read();
+
+			int butt = button_read();
+
 
 			idx=0;
 //			snprintf(lines[idx++].text,32,"Hello World!");
@@ -165,6 +170,8 @@ PRINTF("Testing %f!!!\n",1.9f);
 
 			snprintf(lines[idx++].text,32,"Clock Now  %d", now );
 			snprintf(lines[idx++].text,32,"Clock Base %d", saveram->clock_base );
+
+			snprintf(lines[idx++].text,32,"Butt %d", butt );
 
 /*
 			int ai=0;

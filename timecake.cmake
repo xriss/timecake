@@ -18,6 +18,7 @@ list(APPEND SOURCE_FILES
   src/sys/acc_pine.c
   src/sys/heart_pine.c
   src/sys/touch_pine.c
+  src/sys/button_pine.c
 
 )
 
@@ -31,6 +32,7 @@ list(APPEND SOURCE_FILES
   src/sys/acc.c
   src/sys/heart.c
   src/sys/touch.c
+  src/sys/button.c
 
   src/main.c
 
