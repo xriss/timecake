@@ -35,6 +35,7 @@ list(APPEND SOURCE_FILES
   src/sys/button.c
 
   src/main.c
+  src/main_test.c
 
 )
 
