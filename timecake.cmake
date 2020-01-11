@@ -10,6 +10,8 @@ include_directories(./src)
 
 list(APPEND SOURCE_FILES
 
+  src/sys/saveram_pine.c
+  src/sys/clock_pine.c
   src/sys/i2c_pine.c
   src/sys/lcd_pine.c
   src/sys/battery_pine.c
@@ -21,10 +23,14 @@ list(APPEND SOURCE_FILES
 
 list(APPEND SOURCE_FILES
 
-  src/sys/lcd_font.c
-  src/sys/lcd.c
-  src/sys/battery.c
   src/sys/saveram.c
+  src/sys/clock.c
+  src/sys/lcd.c
+  src/sys/lcd_font.c
+  src/sys/battery.c
+  src/sys/acc.c
+  src/sys/heart.c
+  src/sys/touch.c
 
   src/main.c
 

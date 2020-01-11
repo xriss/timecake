@@ -15,6 +15,10 @@
 #include "sys/touch.h"
 #include "sys/battery.h"
 #include "sys/lcd.h"
+#include "sys/clock.h"
+
+// hardware reference manual
+// https://infocenter.nordicsemi.com/pdf/nRF52832_OPS_v0.6.3.pdf
 
 
 static char text[32*16];
@@ -68,6 +72,7 @@ int main(void)
 	touch_setup();
 	battery_setup();
 	lcd_setup();
+	clock_setup();
 
 PRINTF("Testing %f!!!\n",1.9f);
 	
@@ -145,7 +150,7 @@ PRINTF("Testing %f!!!\n",1.9f);
 				}
 			}
 
-			time_t t = time(NULL);
+			time_t t = clock_read();
 			struct tm *tm = localtime(&t);
 			
 			unsigned char * acc=touch_read();
@@ -156,6 +161,12 @@ PRINTF("Testing %f!!!\n",1.9f);
 			snprintf(lines[idx++].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
 			snprintf(lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
 
+			int now = NRF_RTC0->COUNTER ;
+
+			snprintf(lines[idx++].text,32,"Clock Now  %d", now );
+			snprintf(lines[idx++].text,32,"Clock Base %d", saveram->clock_base );
+
+/*
 			int ai=0;
 			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
 			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
@@ -165,6 +176,7 @@ PRINTF("Testing %f!!!\n",1.9f);
 			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
 			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
 			snprintf(lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+*/
 
 			for(idx=0;idx<16;idx++) { lines[idx].length=strlen(lines[idx].text); }
 

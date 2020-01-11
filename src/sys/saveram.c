@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "saveram.h"
 #include "string.h"
+#include "clock.h"
 
 
 
@@ -15,12 +16,12 @@ int saveram_setup(void)
 	{
 		saveram_format();
 	}
-	return 1;
+	return 0;
 }
 
 void saveram_format(void)
 {
-	memset(saveram,0xf0,sizeof(saveram));
+	memset(saveram,0xf0,sizeof(saveram)); // check we can write to all of it
 	for(int i=0;i<sizeof(saveram);i++)
 	{
 		if( ((char*)saveram)[i]!=0xf0 )
@@ -34,5 +35,8 @@ void saveram_format(void)
 	saveram->magick  = SAVERAM_MAGICK;
 	saveram->version = SAVERAM_VERSION;
 	saveram->length  = sizeof(saveram);
+
+	saveram->clock_base=TIME_OF_WRITING; // it will be at least 2020
+
 }
 
