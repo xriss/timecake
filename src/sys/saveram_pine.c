@@ -1,5 +1,5 @@
 
-// generic saveram code
+// pine saveram code
 
 #include "saveram.h"
 

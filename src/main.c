@@ -29,6 +29,7 @@ int main_state_call(int mode)
 	{
 		case 1: return main_test(mode);
 	}
+	return 0;
 }
 
 int main(void)

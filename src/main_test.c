@@ -85,15 +85,16 @@ static int main_clean()
 	return 0;
 }
 
+static int k=0;
+static int i=0;
+static int j=0;
+static int frame=0;
+
 static int main_update()
 {
 
 PRINTF("UPDATE TEST\n");
 
-	int k=0;
-	int i=0;
-	int j=0;
-	int frame=0;
 
 	if(k>0)
 	{
