@@ -5,6 +5,7 @@
 #include "nrf_gpio.h"
 
 #include "button.h"
+#include "saveram.h"
 
 #define BUTTON_PIN_IN  13
 #define BUTTON_PIN_OUT 15
@@ -36,6 +37,7 @@ int button_read(void)
 	return b;
 }
 
+static unsigned int debounce=0;
 
 void GPIOTE_IRQHandler(void)
 {
@@ -48,15 +50,24 @@ void GPIOTE_IRQHandler(void)
 
 		// aparently this is unsafe?
 		int b=nrf_gpio_pin_read(BUTTON_PIN_IN);
+		
+		int safe=0;
+		if(debounce!=saveram->clock) { safe=1; } // probably more than one sec
 
 		if(b)
 		{
-			button_state|=3;
+			button_state|=1;
+			if(safe) { button_state|=2; }
 		}
 		else
 		{
-			button_state|=4;
 			button_state&=6;
+			if(safe) { button_state|=4; }
+		}
+		
+		if(safe)
+		{
+			debounce=(int)saveram->clock;
 		}
 
 		// enable

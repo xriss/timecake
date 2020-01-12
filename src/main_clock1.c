@@ -86,8 +86,10 @@ static int shader_test(int _x,int _y,void *data)
 		}
 		dr=dr&0xffff;
 		
-		r=0x333333;
+		r=0x000000;
 		int p; // polarity
+
+		int s; // width of hand
 
 /*
 		if(dc<0x8000)
@@ -107,25 +109,58 @@ static int shader_test(int _x,int _y,void *data)
 */
 		if(dc<0x8000)
 		{
+/*
 			if(clocks->tm_hour&1) { p=1; } else { p=-1; }
 			if( dr*12 < (clocks->tm_hour%12)<<16 ) { p=p*-1; }
 			if(p>0) { r+=0x333333;} // else { r-=0x111111; }
-
+*/
+			int s=(0x0000+0xffff-dc);
+			s=s>>8;
+			s=(s*s)>>6;
+			p=( dr - ( ((clocks->tm_hour%12)<<16) / 12 ) - ( (clocks->tm_min<<16) / (60*60) ) )&0xffff;
+			if(p>0x8000) { p=0xffff-p; }
+			if(p<=s) { r=0xffffff; }
+			else
+			if(p<=s*2) { p=p-s; p=(p<<8)/s; r=p+(p<<8)+(p<<16); }
+//			p=(0xffff-p)>>10;
+//			r+=((p<<16)&0xff0000)+((p<<8)&0xff00)+(p&0xff);
 		}
 //		else
 		if(dc<0xc000)
 		{
+/*
 			if(clocks->tm_hour&1) { p=1; } else { p=-1; }
 			if( dr*60 < clocks->tm_min<<16 ) { p=p*-1; }
 			if(p>0) { r+=0x333333;} // else { r-=0x222222; }
-
+*/
+			int s=(0x0000+0xffff-dc);
+			s=s>>8;
+			s=(s*s)>>6;
+			p=(dr - ( (clocks->tm_min<<16) / 60 ) - ( (clocks->tm_sec<<16) / (60*60) ) )&0xffff;
+			if(p>0x8000) { p=0xffff-p; }
+			if(p<=s) { r=0xffffff; }
+			else
+			if(p<=s*2) { p=p-s; p=(p<<8)/s; r=p+(p<<8)+(p<<16); }
+//			p=(0xffff-p)>>10;
+//			r+=((p<<16)&0xff0000)+((p<<8)&0xff00)+(p&0xff);
 		}
 //		else
 		{
+/*
 			if(clocks->tm_min&1) { p=1; } else { p=-1; }
 			if( dr*60 < clocks->tm_sec<<16 ) { p=p*-1; }
 			if(p>0) { r+=0x333333;} // else { r-=0x333333; }
-
+*/
+			int s=(0x0000+0xffff-dc);
+			s=s>>8;
+			s=(s*s)>>6;
+			p=(dr - ( (clocks->tm_sec<<16) / 60 ) )&0xffff;
+			if(p>0x8000) { p=0xffff-p; }
+			if(p<=s) { r=0xffffff; }
+			else
+			if(p<=s*2) { p=p-s; p=(p<<8)/s; r=p+(p<<8)+(p<<16); }
+//			p=(0xffff-p)>>10;
+//			r+=((p<<16)&0xff0000)+((p<<8)&0xff00)+(p&0xff);
 		}
 
 	}
@@ -135,6 +170,8 @@ static int shader_test(int _x,int _y,void *data)
 
 static int main_setup()
 {
+	lcd_color_mode(0x444);
+
 	// setup text screen buffers for a 30x15 character display.
 	for(int idx=0;idx<16;idx++)
 	{

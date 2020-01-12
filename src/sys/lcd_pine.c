@@ -105,17 +105,6 @@
 #define CMD_PROMACT   0xFE // Program action 
 
 
-// prepare to transfer data
-static inline void lcd_transfer_setup(void)
-{
-	nrf_gpio_pin_write(LCD_SELECT,0);
-}
-// finish transferring data
-static inline void lcd_transfer_clean(void)
-{
-	nrf_gpio_pin_write(LCD_SELECT,1);
-}
-
 // send and receive data
 static inline int lcd_transfer(int t)
 {
@@ -181,7 +170,7 @@ int lcd_setup(void)
 	nrf_gpio_cfg_output(LCD_COMMAND);
 	nrf_gpio_cfg_output(LCD_RESET);
 
-	nrf_gpio_pin_write(LCD_SELECT,1);
+	nrf_gpio_pin_write(LCD_SELECT,0); // select LCD
 	nrf_gpio_pin_write(LCD_COMMAND,1);
 	nrf_gpio_pin_write(LCD_RESET,1);
 
@@ -200,10 +189,6 @@ int lcd_setup(void)
 	nrf_gpio_pin_write(LCD_RESET,0);
 	nrf_delay_ms(200);
 	nrf_gpio_pin_write(LCD_RESET,1);
-
-
-	// prepare to send some commands
-	lcd_transfer_setup();
 
 	// software reset
 	lcd_command(CMD_SWRESET); nrf_delay_ms(200);
@@ -225,8 +210,6 @@ int lcd_setup(void)
 
 	lcd_backlight(0xff);
 	
-	// finish sending commands
-	lcd_transfer_clean();
 	
 	return 0;
 }
@@ -436,14 +419,15 @@ void lcd_shader(int px,int py,int hx,int hy,int(*pixel)(int x,int y,void *data),
 // set/get color mode values are : 0x444 , 0x565 , 0x888 or 0x000 to just read.
 int lcd_color_mode(int color_mode)
 {
+	nrf_gpio_pin_write(LCD_SELECT,0);
 	switch(color_mode)
 	{
 		case 0x444:
-			lcd_command(CMD_COLMOD); lcd_data(0x53);
+			lcd_command(CMD_COLMOD); lcd_data(0x63);
 			lcd_color_mode_value=0x444;
 		break;
 		case 0x565:
-			lcd_command(CMD_COLMOD); lcd_data(0x55);
+			lcd_command(CMD_COLMOD); lcd_data(0x65);
 			lcd_color_mode_value=0x565;
 		break;
 		case 0x888:

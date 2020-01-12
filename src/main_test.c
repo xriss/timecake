@@ -59,6 +59,8 @@ static int main_setup()
 
 PRINTF("SETUP TEST\n");
 
+	lcd_color_mode(0x444);
+
 	// setup text screen buffers for a 30x15 character display.
 	for(int idx=0;idx<16;idx++)
 	{
