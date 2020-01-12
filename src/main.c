@@ -15,19 +15,21 @@
 // hardware reference manual
 // https://infocenter.nordicsemi.com/pdf/nRF52832_OPS_v0.6.3.pdf
 
+int main_butt=0;
 
 char main_text[32*16];
 struct shader_font main_lines[16];
 
 
 int main_state=0;
-int main_state_next=1;
+int main_state_next=2;
 
 int main_state_call(int mode)
 {
 	switch(main_state)
 	{
 		case 1: return main_test(mode);
+		case 2: return main_clock1(mode);
 	}
 	return 0;
 }
@@ -53,10 +55,20 @@ int main(void)
 			main_state=main_state_next;
 			main_state_next=0;
 
+			if(main_state>2) { main_state=1; } // max state wrap
+
 			main_state_call(1); // setup new state
 		}
 
+		main_butt = button_read();
+		
 		main_state_call(2); // update current state
+
+		if( main_butt & 2 ) // pressed down
+		{
+			main_state_next=main_state+1;
+		}
+
 	}
 
 	return 0;

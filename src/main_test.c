@@ -75,6 +75,7 @@ PRINTF("SETUP TEST\n");
 		line->ay=-(idx*16);
 
 		line->text=main_text+(idx*32); // 32 char buffers per line (30 visible with 8x16 font)
+		line->text[0]=0;
 		line->length=0;
 	}
 	return 0;
@@ -154,8 +155,6 @@ PRINTF("UPDATE TEST\n");
 		
 //			unsigned char * acc=touch_read();
 
-		int butt = button_read();
-
 
 		int idx=0;
 //			snprintf(lines[idx++].text,32,"Hello World!");
@@ -165,7 +164,7 @@ PRINTF("UPDATE TEST\n");
 
 		snprintf(main_lines[idx++].text,32,"Clock %u . %04x", (unsigned int)t,(int)(t16&0xffff));
 
-		snprintf(main_lines[idx++].text,32,"Butt %d", butt );
+		snprintf(main_lines[idx++].text,32,"Butt %d", main_butt );
 
 /*
 		int ai=0;
@@ -186,7 +185,6 @@ PRINTF("UPDATE TEST\n");
 		{
 			lcd_shader(0,y+f,240,1,shader_test,&i); // interlace updates
 		}
-		
 		frame++;
 	}
 	return 0;
