@@ -37,7 +37,8 @@ int button_read(void)
 	return b;
 }
 
-static unsigned int debounce=0;
+static unsigned int debounce1=0;
+static unsigned int debounce2=0;
 
 void GPIOTE_IRQHandler(void)
 {
@@ -45,36 +46,39 @@ void GPIOTE_IRQHandler(void)
 	{
 		NRF_GPIOTE->EVENTS_IN[0] = 0;
 
-		// disable for safety?
-//		NRF_GPIOTE->CONFIG[0] = 0;
-
-		// aparently this is unsafe?
+		// this might be unsafe?
 		int b=nrf_gpio_pin_read(BUTTON_PIN_IN);
 		
-		int safe=0;
-		if(debounce!=saveram->clock) { safe=1; } // probably more than one sec
+		unsigned int d1=saveram->clock;
+		unsigned int d2=NRF_RTC0->COUNTER;
+		int nobounce=0;
+		if( debounce1+1 < d1 ) { nobounce=1; } // require more than one sec
+		else
+		if( debounce1 > d1 ) { nobounce=1; } // ERROR reset bounce counters
+		else // check ticks
+		{
+			d2+=(d1-debounce1)*0x8000; // add secs
+			if( (d2-debounce2) > 0x0080) { nobounce=1; } // require more than 1/64 of a sec between state changes
+		}
 
 		if(b)
 		{
+			
+			if( nobounce && ((button_state&1)==0) ) { button_state|=2; }
 			button_state|=1;
-			if(safe) { button_state|=2; }
 		}
 		else
 		{
+			if( nobounce && ((button_state&1)==1) ) { button_state|=4; }
 			button_state&=6;
-			if(safe) { button_state|=4; }
 		}
 		
-		if(safe)
+		if(nobounce)
 		{
-			debounce=(int)saveram->clock;
+			debounce1=(unsigned int)saveram->clock; // i think this double access is safe in interrupt?
+			debounce2=NRF_RTC0->COUNTER; // anyway it will mostly work
 		}
 
-		// enable
-//		NRF_GPIOTE->CONFIG[0] =
-//			(GPIOTE_CONFIG_POLARITY_Toggle << GPIOTE_CONFIG_POLARITY_Pos)	|
-//			(BUTTON_PIN_IN << GPIOTE_CONFIG_PSEL_Pos)						|
-//			(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos)			;
 
 	}
 
