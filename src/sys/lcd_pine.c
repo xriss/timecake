@@ -289,7 +289,8 @@ static void lcd_shader_565(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 	// state passed into lcd_shader_transfer by pointers
 	int d1=0;
 
-	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
+	int xymax=hx*hy; // need one more pixel loop than asked for
+	for(int xy=0;xy<=xymax;xy++)
 	{
 		int x=px+(xy%hx);
 		int y=py+(xy/hx);
@@ -307,7 +308,7 @@ static void lcd_shader_565(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)(((d1>>3)&0x1f)|((d1>>5)&0x70));			// out
-			d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+			if(xy!=xymax) { d1=(*pixel)(x,y,data); }							// get pixel before waiting... (IMPORTANT)
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
 			r;//hush
@@ -329,7 +330,8 @@ static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 	int d1=0;
 	int d2=0;
 
-	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
+	int xymax=hx*hy; // need one more pixel loop than asked for
+	for(int xy=0;xy<=xymax;xy++)
 	{
 		int x=px+(xy%hx);
 		int y=py+(xy/hx);
@@ -337,13 +339,13 @@ static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 		{
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)(((d1>>16)&0xf0)|((d1>>12)&0x0f));			// out
-			d2=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+			if(xy!=xymax) { d2=(*pixel)(x,y,data); }							// get pixel before waiting... (IMPORTANT)
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;                    								// in
 			r;//hush
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
-			NRF_SPI0->TXD=(uint32_t)(((d1)&0xf0)|((d2>>20)&0x0f));			// out
+			NRF_SPI0->TXD=(uint32_t)(((d1)&0xf0)|((d2>>20)&0x0f));				// out
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
 			r;//hush
@@ -358,7 +360,7 @@ static void lcd_shader_444(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 			{
 				NRF_SPI0->EVENTS_READY=0;											// ready
 				NRF_SPI0->TXD=(uint32_t)(((d2>>8)&0xf0)|((d2>>4)&0x0f));			// out
-				d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+				if(xy!=xymax) { d1=(*pixel)(x,y,data); }							// get pixel before waiting... (IMPORTANT)
 				while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 				r=NRF_SPI0->RXD;													// in
 				r;//hush
@@ -379,8 +381,8 @@ static void lcd_shader_888(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 
 	// state passed into lcd_shader_transfer by pointers
 	int d1=0;
-
-	for(int xy=0;xy<=hx*hy;xy++) // one more than we need
+	int xymax=hx*hy; // need one more pixel than asked for
+	for(int xy=0;xy<=xymax;xy++)
 	{
 		int x=px+(xy%hx);
 		int y=py+(xy/hx);
@@ -404,7 +406,7 @@ static void lcd_shader_888(int px,int py,int hx,int hy,int(*pixel)(int x,int y,v
 
 			NRF_SPI0->EVENTS_READY=0;											// ready
 			NRF_SPI0->TXD=(uint32_t)((d1)&0xff);								// out
-			d1=(*pixel)(x,y,data);												// get pixel before waiting... (IMPORTANT)
+			if(xy!=xymax) { d1=(*pixel)(x,y,data); }							// get pixel before waiting... (IMPORTANT)
 			while(NRF_SPI0->EVENTS_READY==0){;}									// wait
 			r=NRF_SPI0->RXD;													// in
 			r;//hush
