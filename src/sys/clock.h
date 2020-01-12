@@ -6,5 +6,6 @@
 
 extern int clock_setup(void);
 
-extern unsigned int clock_read(void);
+extern long long int clock_time(void);
+extern int clock_read(void);
 

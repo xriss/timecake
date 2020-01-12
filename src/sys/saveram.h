@@ -5,7 +5,7 @@ extern void saveram_format(void);
 
 
 #define SAVERAM_MAGICK  0x5AB3BEEF
-#define SAVERAM_VERSION 0x00010002
+#define SAVERAM_VERSION 0x00010006
 
 struct saveram 
 {
@@ -13,7 +13,7 @@ struct saveram
 	unsigned int version;  // version
 	unsigned int length;   // size of this saveram struct
 	
-	unsigned int clock_base; // add this to the hardware clock sample to get time
+	long long int clock;   // time in seconds, live updated by interrupt
 };
 
 

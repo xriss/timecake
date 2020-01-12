@@ -9,6 +9,8 @@
 #include "clock.h"
 #include "saveram.h"
 
+#define CLOCK_POW			15					// must be between 3 and 15
+#define CLOCK_SCALE			(1<<CLOCK_POW)		// number of ticks per second 8 to 32768
 
 
 // something like this
@@ -24,7 +26,7 @@ int clock_setup(void)
 
 	if(t>TIME_OF_WRITING) // if time is after 2020 then assume it is correct
 	{
-		saveram->clock_base=t;
+		saveram->clock=t*65536;
 	}
 
 	// Select the 32 kHz crystal and start the 32 kHz clock
@@ -33,14 +35,13 @@ int clock_setup(void)
 	NRF_CLOCK->TASKS_LFCLKSTART = 1;
 	while(NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
 
-	// Configure the RTC for 1 minute wakeup (default)
-	NRF_RTC0->PRESCALER = 0xFFF; // 1 second tick
+	NRF_RTC0->PRESCALER = (0xfff>>(CLOCK_POW-3));
 	NRF_RTC0->EVTENSET = RTC_EVTENSET_COMPARE0_Msk;
 	NRF_RTC0->INTENSET = RTC_INTENSET_COMPARE0_Msk;
-	NRF_RTC0->CC[0] = 60*8 ; // 60 seconds interrupt
-	NRF_RTC0->TASKS_START = 1;
+	NRF_RTC0->CC[0] = CLOCK_SCALE ; // 1 second interrupt
 	NVIC_SetPriority(RTC0_IRQn, 3);
 	NVIC_EnableIRQ(RTC0_IRQn);
+	NRF_RTC0->TASKS_START = 1;
     NRF_RTC0->TASKS_CLEAR = 1; // enable next interupt
     
 	return 0;
@@ -52,15 +53,17 @@ void RTC0_IRQHandler(void)
 	{
 		NRF_RTC0->EVENTS_COMPARE[0] = 0;
 		NRF_RTC0->TASKS_CLEAR = 1; // enable next interupt
-		saveram->clock_base+=60; // one minute has passed
+		saveram->clock+=65536; // one second has passed
 	}
 }
 
 /*
-	get linux time in seconds
+	get linux time in seconds * 65536 using hardware counter
+	
 */
-unsigned int clock_read(void)
+long long int clock_time(void)
 {
-	int now = NRF_RTC0->COUNTER ;
-	return saveram->clock_base + (now/8) ; //  current time
+	// might be off by one sec...
+	return saveram->clock + ( NRF_RTC0->COUNTER << (16-CLOCK_POW) ) ;
 }
+

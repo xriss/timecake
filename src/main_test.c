@@ -148,7 +148,8 @@ PRINTF("UPDATE TEST\n");
 			}
 		}
 
-		time_t t = clock_read();
+		time_t t16 = clock_time(); // seconds since 1970 * 65536
+		time_t t = t16>>16; // seconds since 1970
 		struct tm *tm = localtime(&t);
 		
 //			unsigned char * acc=touch_read();
@@ -162,10 +163,7 @@ PRINTF("UPDATE TEST\n");
 		snprintf(main_lines[idx++].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
 		snprintf(main_lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
 
-		int now = NRF_RTC0->COUNTER ;
-
-		snprintf(main_lines[idx++].text,32,"Clock Now  %d", now );
-		snprintf(main_lines[idx++].text,32,"Clock Base %d", saveram->clock_base );
+		snprintf(main_lines[idx++].text,32,"Clock %u . %04x", (unsigned int)t,(int)(t16&0xffff));
 
 		snprintf(main_lines[idx++].text,32,"Butt %d", butt );
 
@@ -183,8 +181,12 @@ PRINTF("UPDATE TEST\n");
 
 		for(int idx=0;idx<16;idx++) { main_lines[idx].length=strlen(main_lines[idx].text); }
 
-		lcd_shader(0,0,240,240,shader_test,&i);
-
+		int f=frame&1;
+		for(int y=0;y<240;y+=2)
+		{
+			lcd_shader(0,y+f,240,1,shader_test,&i); // interlace updates
+		}
+		
 		frame++;
 	}
 	return 0;
