@@ -6,6 +6,9 @@
 #include <nrf.h>
 #include "nrf_gpio.h"
 
+#include "fixmath.h"
+
+
 #include "sys/debug.h"
 
 #include "sys/saveram.h"
@@ -43,42 +46,42 @@ static int shader_test(int _x,int _y,void *data)
 	{
 		int d=120;
 		int dd=d*d;
-		float cx=x-120.0f;
-		float cy=y-120.0f;
-		float cc=( cx*cx + cy*cy );
+		int cx=x-120.0f;
+		int cy=y-120.0f;
+		int cc=( cx*cx + cy*cy );
 		if( cc < dd )
 		{
 			r=0x000010;
 
-			float t=(atan2f(-cx,cy)/(M_PI*2.0f))+0.5f;
-			float c=sqrtf(cc)/120.0f;
+			int t=fix16_div(fix16_atan2(-cx<<16,cy<<16),(fix16_pi*2))+(fix16_one/2);
+			int c=fix16_div(fix16_sqrt(cc<<16),(120<<16));
 			
-			if(c<0.2f)
+			if(c<fix16_one*2/10)
 			{
-				if( t*365.0f < clocks->tm_yday )
+				if( t*365.0f < fix16_one*clocks->tm_yday )
 				{ r=0x444444; }
 			}
 			else
-			if(c<0.4f)
+			if(c<fix16_one*4/10)
 			{
-				if( t*31.0f < clocks->tm_mday )
+				if( t*31.0f < fix16_one*clocks->tm_mday )
 				{ r=0x666666; }
 			}
 			else
-			if(c<0.6f)
+			if(c<fix16_one*6/10)
 			{
-				if( t*24.0f < clocks->tm_hour )
+				if( t*24.0f < fix16_one*clocks->tm_hour )
 				{ r=0x888888; }
 			}
 			else
-			if(c<0.8f)
+			if(c<fix16_one*8/10)
 			{
-				if( t*60.0f < clocks->tm_min )
+				if( t*60.0f < fix16_one*clocks->tm_min )
 				{ r=0xaaaaaa; }
 			}
 			else
 			{
-				if( t*60.0f < clocks->tm_sec )
+				if( t*60.0f < fix16_one*clocks->tm_sec )
 				{ r=0xcccccc; }
 			}
 		}
