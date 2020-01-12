@@ -7,6 +7,7 @@ raspi/root
 raspi/boot
 raspi/LCD-show
 
-nr5sdk/*
-out/*
+libfixmath
+nr5sdk
+out/
 

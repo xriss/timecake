@@ -1,3 +1,4 @@
+cd `dirname $0`
 
 echo
 echo " run this script with -D SEMIHOSTING=ON to enable printf output to the openocd console "

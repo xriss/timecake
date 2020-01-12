@@ -1,3 +1,4 @@
+cd `dirname $0`
 
 # use gdb to upload and then quit
 

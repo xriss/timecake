@@ -1,3 +1,4 @@
+cd `dirname $0`
 
 # use gdb and automatically run after loading
 
