@@ -42,7 +42,7 @@ int clock_setup(void)
 	NVIC_SetPriority(RTC0_IRQn, 3);
 	NVIC_EnableIRQ(RTC0_IRQn);
 	NRF_RTC0->TASKS_START = 1;
-    NRF_RTC0->TASKS_CLEAR = 1; // enable next interupt
+    NRF_RTC0->TASKS_CLEAR = 1; // enable next interrupt
     
 	return 0;
 }
@@ -52,7 +52,7 @@ void RTC0_IRQHandler(void)
 	if(NRF_RTC0->EVENTS_COMPARE[0])
 	{
 		NRF_RTC0->EVENTS_COMPARE[0] = 0;
-		NRF_RTC0->TASKS_CLEAR = 1; // enable next interupt
+		NRF_RTC0->TASKS_CLEAR = 1; // enable next interrupt
 		saveram->clock+=65536; // one second has passed
 	}
 }
