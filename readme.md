@@ -24,6 +24,8 @@ To prepare.
     * Install dependencies
 2. `./nr5sdk.sh`
     * Download SDK
+3. `./libfixmath.sh`
+    * Download libfixmath
 
 
 To build the code.
