@@ -26,7 +26,7 @@ int clock_setup(void)
 
 	if(t>TIME_OF_WRITING) // if time is after 2020 then assume it is correct
 	{
-		saveram->clock=t*65536;
+		saveram->clock=t;
 	}
 
 	// Select the 32 kHz crystal and start the 32 kHz clock
@@ -53,17 +53,16 @@ void RTC0_IRQHandler(void)
 	{
 		NRF_RTC0->EVENTS_COMPARE[0] = 0;
 		NRF_RTC0->TASKS_CLEAR = 1; // enable next interrupt
-		saveram->clock+=65536; // one second has passed
+		saveram->clock+=1; // one second has passed
 	}
 }
 
 /*
-	get linux time in seconds * 65536 using hardware counter
+	get linux time in seconds
 	
 */
 long long int clock_time(void)
 {
-	// might be off by one sec...
-	return saveram->clock + ( NRF_RTC0->COUNTER << (16-CLOCK_POW) ) ;
+	return saveram->clock ; // + ( NRF_RTC0->COUNTER << (16-CLOCK_POW) ) ;
 }
 

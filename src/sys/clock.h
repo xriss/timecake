@@ -7,5 +7,5 @@
 extern int clock_setup(void);
 
 extern long long int clock_time(void);
-extern int clock_read(void);
+extern int clock_fract(void);
 

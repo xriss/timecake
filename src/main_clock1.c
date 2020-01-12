@@ -48,46 +48,84 @@ static int shader_test(int _x,int _y,void *data)
 		int dd=d*d;
 		int cx=x-120.0f;
 		int cy=y-120.0f;
-		int cc=( cx*cx + cy*cy );
-		if( cc < dd )
+		int cxa=cx < 0 ? -cx : cx; // abs
+		int cya=cy < 0 ? -cy : cy; // abs
+		
+		int dr=0; // distance around perimiter
+		int dc=0; // distance to center
+		
+		if( (cxa==0) && (cya==0) ) // deal with 0 0 case
 		{
-			r=0x000010;
-
-			int t=fix16_div(fix16_atan2(-cx<<16,cy<<16),(fix16_pi*2))+(fix16_one/2);
-			int c=fix16_div(fix16_sqrt(cc<<16),(120<<16));
-			
-			if(c<fix16_one*2/10)
+			dr=0;
+			dc=0;
+		}
+		else
+		if(cxa<cya)
+		{
+			dc=(cya<<16)/d;
+			if(cy<0)
 			{
-				if( t*365.0f < fix16_one*clocks->tm_yday )
-				{ r=0x444444; }
-			}
-			else
-			if(c<fix16_one*4/10)
-			{
-				if( t*31.0f < fix16_one*clocks->tm_mday )
-				{ r=0x666666; }
-			}
-			else
-			if(c<fix16_one*6/10)
-			{
-				if( t*24.0f < fix16_one*clocks->tm_hour )
-				{ r=0x888888; }
-			}
-			else
-			if(c<fix16_one*8/10)
-			{
-				if( t*60.0f < fix16_one*clocks->tm_min )
-				{ r=0xaaaaaa; }
+				dr=0x0000+((cx<<13)/cya);
 			}
 			else
 			{
-				if( t*60.0f < fix16_one*clocks->tm_sec )
-				{ r=0xcccccc; }
+				dr=0x8000-((cx<<13)/cya);
 			}
 		}
 		else
 		{
-			r=0x000010;
+			dc=(cxa<<16)/d;
+			if(cx<0)
+			{
+				dr=0xc000-((cy<<13)/cxa);
+			}
+			else
+			{
+				dr=0x4000+((cy<<13)/cxa);
+			}
+		}
+		dr=dr&0xffff;
+		
+		r=0x333333;
+		int p; // polarity
+
+/*
+		if(dc<0x8000)
+		{
+			p=1;
+			if( dr*365 < clocks->tm_yday<<16 ) { p=p*-1; }
+			if(p>0) { r+=0x111111;} else { r-=0x111111; }
+		}
+//		else
+		if(dc<0xa000)
+		{
+			if(clocks->tm_yday&1) { p=1; } else { p=-1; }
+			if( dr*31 < clocks->tm_mday<<16 ) { p=p*-1; }
+			if(p>0) { r+=0x111111;} else { r-=0x111111; }
+		}
+//		else
+*/
+		if(dc<0x8000)
+		{
+			if(clocks->tm_hour&1) { p=1; } else { p=-1; }
+			if( dr*12 < (clocks->tm_hour%12)<<16 ) { p=p*-1; }
+			if(p>0) { r+=0x333333;} // else { r-=0x111111; }
+
+		}
+//		else
+		if(dc<0xc000)
+		{
+			if(clocks->tm_hour&1) { p=1; } else { p=-1; }
+			if( dr*60 < clocks->tm_min<<16 ) { p=p*-1; }
+			if(p>0) { r+=0x333333;} // else { r-=0x222222; }
+
+		}
+//		else
+		{
+			if(clocks->tm_min&1) { p=1; } else { p=-1; }
+			if( dr*60 < clocks->tm_sec<<16 ) { p=p*-1; }
+			if(p>0) { r+=0x333333;} // else { r-=0x333333; }
+
 		}
 
 	}
@@ -124,13 +162,22 @@ static int main_clean()
 	return 0;
 }
 
+static time_t oldt;
+
 static int main_update()
 {
 
-	time_t t16 = clock_time(); // seconds since 1970 * 65536
-	time_t t = t16>>16; // seconds since 1970
+	time_t t = clock_time(); // seconds since 1970
 	clocks = localtime(&t);
 
+	int newtime=0;
+	
+	if(oldt!=t) // newtime
+	{
+		newtime=1;
+		oldt=t; // remember
+	}
+	
 	int flags;
 	float voltage;
 	float percent;
@@ -165,7 +212,11 @@ static int main_update()
 
 	for(int idx=0;idx<16;idx++) { main_lines[idx].length=strlen(main_lines[idx].text); }
 
-	lcd_shader(0,0,240,240,shader_test,0); // interlace updates
+	// only draw if time changes
+	if(newtime)
+	{
+		lcd_shader(0,0,240,240,shader_test,0);
+	}
 /*
 	int f=frame&1;
 	for(int y=0;y<240;y+=2)

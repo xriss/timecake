@@ -5,7 +5,7 @@ extern void saveram_format(void);
 
 
 #define SAVERAM_MAGICK  0x5AB3BEEF
-#define SAVERAM_VERSION 0x00010006
+#define SAVERAM_VERSION 0x00010007
 
 struct saveram 
 {
