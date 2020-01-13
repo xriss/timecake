@@ -1,13 +1,8 @@
 
-UNDER CONSTRUCTION ALL WORDS ARE LIES
-=====================================
+TIMECAKE
+========
 
-![under construction](https://media.giphy.com/media/EIiJp9cQ3GeEU/giphy.gif)
-![badydance](http://giphygifs.s3.amazonaws.com/media/iqBr5cmyz0t0s/giphy.gif)
-![construction](https://media.giphy.com/media/WrOweqqiDcvoQszeSu/giphy.gif)
-
-
-My plan is to get as far as some sort of watch display so far it looks 
+My plan is to get as far as some sort of watch display, so far it looks 
 like we can do most things at the hardware level.
 
 See raspi directory for scripts to build an sd card image to run on a 
@@ -25,7 +20,7 @@ To prepare.
 2. `./nr5sdk.sh`
     * Download SDK
 3. `./libfixmath.sh`
-    * Download libfixmath
+    * Download libfixmath ( not sure we need it but it is part of the build for now )
 
 
 To build the code.
@@ -56,8 +51,9 @@ will only work while gdb is connected.
 	* View the printf output (openocd logs) Note that gdb must still be connected or semihosting will fail.
 
 
-
-Hope this helps, but remember it is all just notes as I go...
+After running this semi hosting version successfully it will have set 
+the clock correctly and you can flash back to the normal version *and* 
+retain the correct time.
 
 
 
@@ -68,6 +64,7 @@ PINEWATCH FEATURES WORKING
 - [x] Remote printf (semihosting)
 - [x] Remote GDB
 - [ ] Local build 
+- [x] Sleep
 - [x] LCD
 - [x] Battery percent
 - [x] Time
