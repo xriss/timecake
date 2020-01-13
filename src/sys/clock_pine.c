@@ -5,6 +5,7 @@
 #include <time.h>
 
 #include "nrf.h"
+#include "nrf_delay.h"
 
 #include "debug.h"
 #include "clock.h"
@@ -67,12 +68,15 @@ void RTC0_IRQHandler(void)
 */
 long long int clock_time(void)
 {
-	NVIC_DisableIRQ(RTC0_IRQn);
-	int t=NRF_RTC0->COUNTER;
-	long long int r=saveram->clock;
+	volatile int t;
+	volatile long long int r;
+	
+	NVIC_DisableIRQ(RTC0_IRQn); // not sure how to guard this access...
+	t=NRF_RTC0->COUNTER;
+	r=saveram->clock;
 	NVIC_EnableIRQ(RTC0_IRQn);
 	
-	r+= ( (t-tickoff) << (16-CLOCK_POW) ) ;
+	r+= ( ((t-tickoff)&0xffffff) << (16-CLOCK_POW) ) ;
 	
 //	PRINTF("ticks %08x\n",(t-tickoff) << (16-CLOCK_POW));
 	
