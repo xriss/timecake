@@ -96,7 +96,7 @@ static int frame=0;
 static int main_update()
 {
 
-PRINTF("UPDATE TEST\n");
+//PRINTF("UPDATE TEST\n");
 
 
 	if(k>0)
