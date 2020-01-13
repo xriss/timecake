@@ -130,26 +130,26 @@ PRINTF("UPDATE TEST\n");
 		char * charging="    ";
 //			if(flags==2) { charging="===="; } // Charged (never reaches this state?)
 //			else
-		if(flags&1) // Charging
+	if(flags&1) // Charging
+	{
+		switch(frame&3) // animate
 		{
-			switch(frame&3) // animate
-			{
-				case 0: charging="+   "; break;
-				case 1: charging="++  "; break;
-				case 2: charging="+++ "; break;
-				case 3: charging="++++"; break;
-			}
+			case 0: charging="+  +"; break;
+			case 1: charging="++  "; break;
+			case 2: charging=" ++ "; break;
+			case 3: charging="  ++"; break;
 		}
-		else // Discharging
+	}
+	else // Discharging
+	{
+		switch(frame&3) // animate
 		{
-			switch(frame&3) // animate
-			{
-				case 0: charging="----"; break;
-				case 1: charging="--- "; break;
-				case 2: charging="--  "; break;
-				case 3: charging="-   "; break;
-			}
+			case 0: charging="  --"; break;
+			case 1: charging=" -- "; break;
+			case 2: charging="--  "; break;
+			case 3: charging="-  -"; break;
 		}
+	}
 
 		time_t t16 = clock_time(); // seconds since 1970 * 65536
 		time_t t = t16>>16; // seconds since 1970

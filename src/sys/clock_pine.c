@@ -57,7 +57,7 @@ void RTC0_IRQHandler(void)
 		NRF_RTC0->EVENTS_COMPARE[0] = 0;
 		saveram->clock+=65536; // one second has passed
 		tickoff=NRF_RTC0->COUNTER&0xff8000; // 24bit counter
-		NRF_RTC0->CC[0] = tickoff+CLOCK_SCALE ; // next 1 second interrupt
+		NRF_RTC0->CC[0] = (tickoff+CLOCK_SCALE&0xff8000) ; // next 1 second interrupt
 	}
 }
 
