@@ -36,7 +36,7 @@ void saveram_format(void)
 	saveram->version = SAVERAM_VERSION;
 	saveram->length  = sizeof(saveram);
 
-	saveram->clock=((long long int)(TIME_OF_WRITING)); // it will be at least 2020
+	saveram->clock=((long long int)(TIME_OF_WRITING))*65536; // it will be at least 2020
 
 }
 

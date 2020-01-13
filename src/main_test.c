@@ -151,7 +151,8 @@ PRINTF("UPDATE TEST\n");
 			}
 		}
 
-		time_t t = clock_time(); // seconds since 1970 * 65536
+		time_t t16 = clock_time(); // seconds since 1970 * 65536
+		time_t t = t16>>16; // seconds since 1970
 		struct tm *tm = localtime(&t);
 		
 //			unsigned char * acc=touch_read();
@@ -163,7 +164,7 @@ PRINTF("UPDATE TEST\n");
 		snprintf(main_lines[idx++].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
 		snprintf(main_lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
 
-		snprintf(main_lines[idx++].text,32,"Clock %u", (unsigned int)t);
+		snprintf(main_lines[idx++].text,32,"Clock %u . %04x", (unsigned int)t,(int)(t16&0xffff));
 
 		snprintf(main_lines[idx++].text,32,"Butt %d", main_butt );
 

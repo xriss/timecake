@@ -45,7 +45,7 @@ static int shader_test(int _x,int _y,void *data)
 	if(r==-1) // fill background with simple animation
 	{
 		int d=120;
-		int dd=d*d;
+//		int dd=d*d;
 		int cx=x-120.0f;
 		int cy=y-120.0f;
 		int cxa=cx < 0 ? -cx : cx; // abs
@@ -89,7 +89,7 @@ static int shader_test(int _x,int _y,void *data)
 		r=0x000000;
 		int p; // polarity
 
-		int s; // width of hand
+//		int s; // width of hand
 
 /*
 		if(dc<0x8000)
@@ -204,7 +204,8 @@ static time_t oldt;
 static int main_update()
 {
 
-	time_t t = clock_time(); // seconds since 1970
+	time_t t16 = clock_time(); // seconds since 1970 * 65536
+	time_t t = t16>>16; // seconds since 1970
 	clocks = localtime(&t);
 
 	int newtime=0;
@@ -226,25 +227,30 @@ static int main_update()
 	{
 		switch(frame&3) // animate
 		{
-			case 0: charging="+   "; break;
+			case 0: charging="+  +"; break;
 			case 1: charging="++  "; break;
-			case 2: charging="+++ "; break;
-			case 3: charging="++++"; break;
+			case 2: charging=" ++ "; break;
+			case 3: charging="  ++"; break;
 		}
 	}
 	else // Discharging
 	{
 		switch(frame&3) // animate
 		{
-			case 0: charging="----"; break;
-			case 1: charging="--- "; break;
+			case 0: charging="  --"; break;
+			case 1: charging=" -- "; break;
 			case 2: charging="--  "; break;
-			case 3: charging="-   "; break;
+			case 3: charging="-  -"; break;
 		}
 	}
 
 	int idx=0;
-//	snprintf(main_lines[idx++].text,32," %d.%03dv : %3d%% %s",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent,charging);
+
+	if(flags&1)
+	{
+		snprintf(main_lines[idx++].text,32," %d.%03dv : %3d%% %s",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent,charging);
+	}
+	
 //	snprintf(main_lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", clocks->tm_year+1900 , clocks->tm_mon + 1, clocks->tm_mday, clocks->tm_hour, clocks->tm_min, clocks->tm_sec );
 
 	for(int idx=0;idx<16;idx++) { main_lines[idx].length=strlen(main_lines[idx].text); }

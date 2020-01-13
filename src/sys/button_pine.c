@@ -5,6 +5,7 @@
 #include "nrf_gpio.h"
 
 #include "button.h"
+#include "clock.h"
 #include "saveram.h"
 
 #define BUTTON_PIN_IN  13
@@ -37,8 +38,7 @@ int button_read(void)
 	return b;
 }
 
-static unsigned int debounce1=0;
-static unsigned int debounce2=0;
+static long long int debounce=0;
 
 void GPIOTE_IRQHandler(void)
 {
@@ -49,17 +49,9 @@ void GPIOTE_IRQHandler(void)
 		// this might be unsafe?
 		int b=nrf_gpio_pin_read(BUTTON_PIN_IN);
 		
-		unsigned int d1=saveram->clock;
-		unsigned int d2=NRF_RTC0->COUNTER;
 		int nobounce=0;
-		if( debounce1+1 < d1 ) { nobounce=1; } // require more than one sec
-		else
-		if( debounce1 > d1 ) { nobounce=1; } // ERROR reset bounce counters
-		else // check ticks
-		{
-			d2+=(d1-debounce1)*0x8000; // add secs
-			if( (d2-debounce2) > 0x0080) { nobounce=1; } // require more than 1/64 of a sec between state changes
-		}
+		long long int d=clock_time();
+		if( (d-debounce) > 0x0400) { nobounce=1; } // require more than 1/64 of a sec between state changes
 
 		if(b)
 		{
@@ -75,8 +67,7 @@ void GPIOTE_IRQHandler(void)
 		
 		if(nobounce)
 		{
-			debounce1=(unsigned int)saveram->clock; // i think this double access is safe in interrupt?
-			debounce2=NRF_RTC0->COUNTER; // anyway it will mostly work
+			debounce=d; // remember last time
 		}
 
 
