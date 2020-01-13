@@ -52,8 +52,8 @@ will only work while gdb is connected.
 
 
 After running this semi hosting version successfully it will have set 
-the clock correctly and you can flash back to the normal version *and* 
-retain the correct time.
+the clock correctly so you can flash back to the normal version *and* 
+retain the correct time. This is how I am currently setting the time :)
 
 
 
