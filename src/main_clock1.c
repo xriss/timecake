@@ -220,35 +220,13 @@ static int main_update()
 	float voltage;
 	float percent;
 	battery_read(&flags,&voltage,&percent);
-	char * charging="    ";
-//			if(flags==2) { charging="===="; } // Charged (never reaches this state?)
-//			else
-	if(flags&1) // Charging
-	{
-		switch(frame&3) // animate
-		{
-			case 0: charging="+  +"; break;
-			case 1: charging="++  "; break;
-			case 2: charging=" ++ "; break;
-			case 3: charging="  ++"; break;
-		}
-	}
-	else // Discharging
-	{
-		switch(frame&3) // animate
-		{
-			case 0: charging="  --"; break;
-			case 1: charging=" -- "; break;
-			case 2: charging="--  "; break;
-			case 3: charging="-  -"; break;
-		}
-	}
+
+	for(int idx=0;idx<16;idx++) { main_lines[idx].text[0]=0; }
 
 	int idx=0;
-
-	if(flags&1)
+	if((flags&1)||(percent<20.0f)) // show battery only when charging or when low
 	{
-		snprintf(main_lines[idx++].text,32," %d.%03dv : %3d%% %s",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent,charging);
+		snprintf(main_lines[idx++].text,32,"%d.%03dv                    %3d%%",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent);
 	}
 	
 //	snprintf(main_lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", clocks->tm_year+1900 , clocks->tm_mon + 1, clocks->tm_mday, clocks->tm_hour, clocks->tm_min, clocks->tm_sec );
