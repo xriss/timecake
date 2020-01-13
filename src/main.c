@@ -38,12 +38,12 @@ int main_state_call(int mode)
 					lcd_backlight(0);
 				break;
 				case 2: // sleepy update
-					__WFE();
 					__SEV();
+					__WFE();
 					__WFE();
 				break;
 				case 3: // clean, screen on
-					lcd_backlight(233);
+					lcd_backlight(255);
 				break;
 			}
 		break;
