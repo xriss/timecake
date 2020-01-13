@@ -203,10 +203,8 @@ int lcd_setup(void)
 	int c=0x000000;
 	lcd_shader(0,0,240,240,lcd_shader_color,&c);
 
-	// display on
 	lcd_command(CMD_INVON);
 	lcd_command(CMD_NORON);
-	lcd_command(CMD_DISPON);
 
 	lcd_backlight(0xff);
 	
@@ -248,6 +246,16 @@ int lcd_backlight(int bright)
 	else
 	{
 		nrf_gpio_pin_write(LCD_BACKLIGHT_HIGH,0);
+	}
+
+	// display on/off
+	if(bright==0)
+	{
+		lcd_command(CMD_DISPOFF);
+	}
+	else
+	{
+		lcd_command(CMD_DISPON);
 	}
 
 	return 0;

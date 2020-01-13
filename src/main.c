@@ -10,6 +10,9 @@
 #include "sys/clock.h"
 #include "sys/button.h"
 
+#include "nrf.h"
+#include "nrf_gpio.h"
+
 #include "main.h"
 
 // hardware reference manual
@@ -28,6 +31,22 @@ int main_state_call(int mode)
 {
 	switch(main_state)
 	{
+		case 0:
+			switch(mode)
+			{
+				case 1: // setup, screen off
+					lcd_backlight(0);
+				break;
+				case 2: // sleepy update
+					__WFE();
+					__SEV();
+					__WFE();
+				break;
+				case 3: // clean, screen on
+					lcd_backlight(233);
+				break;
+			}
+		break;
 		case 1: return main_test(mode);
 		case 2: return main_clock1(mode);
 	}
@@ -48,6 +67,12 @@ int main(void)
 	
 	while(1)
 	{
+		main_butt = button_read();
+		if( main_butt & 2 ) // pressed down
+		{
+			main_state_next=main_state+1;
+		}
+
 		if(main_state_next) // flag a state change 
 		{
 			main_state_call(3); // clean old state
@@ -55,20 +80,13 @@ int main(void)
 			main_state=main_state_next;
 			main_state_next=0;
 
-			if(main_state>2) { main_state=1; } // max state wrap
+			if(main_state>2) { main_state=0; } // max state wrap, state 0 is sleepy time
 
 			main_state_call(1); // setup new state
 		}
 
-		main_butt = button_read();
 		
 		main_state_call(2); // update current state
-
-		if( main_butt & 2 ) // pressed down
-		{
-			main_state_next=main_state+1;
-		}
-
 	}
 
 	return 0;
