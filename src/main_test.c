@@ -18,11 +18,8 @@
 
 #include "main.h"
 
-static int shader_test(int _x,int _y,void *data)
+static int shader_test(int x,int y,void *data)
 {
-	int x=239-_y; // rotate screen
-	int y=_x;
-
 	int r=-1; // background flag
 
 	int ty=(y/16)&0xf; // 0-15 line
@@ -60,6 +57,7 @@ static int main_setup()
 PRINTF("SETUP TEST\n");
 
 	lcd_color_mode(0x444);
+	lcd_rotate(3);
 
 	// setup text screen buffers for a 30x15 character display.
 	for(int idx=0;idx<16;idx++)

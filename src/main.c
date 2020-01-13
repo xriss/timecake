@@ -25,7 +25,7 @@ struct shader_font main_lines[16];
 
 
 int main_state=0;
-int main_state_next=2;
+int main_state_next=1;
 
 int main_state_call(int mode)
 {
@@ -36,6 +36,7 @@ int main_state_call(int mode)
 			{
 				case 1: // setup, screen off
 					lcd_backlight(0);
+					lcd_sleep(255);
 				break;
 				case 2: // sleepy update
 					__SEV();
@@ -43,6 +44,7 @@ int main_state_call(int mode)
 					__WFE();
 				break;
 				case 3: // clean, screen on
+					lcd_sleep(0);
 					lcd_backlight(255);
 				break;
 			}
@@ -75,6 +77,8 @@ int main(void)
 
 		if(main_state_next) // flag a state change 
 		{
+			lcd_backlight(0); // display off
+			
 			main_state_call(3); // clean old state
 
 			main_state=main_state_next;
@@ -87,6 +91,8 @@ int main(void)
 
 		
 		main_state_call(2); // update current state
+
+		lcd_backlight(255); // display on
 	}
 
 	return 0;

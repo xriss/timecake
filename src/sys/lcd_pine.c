@@ -198,6 +198,7 @@ int lcd_setup(void)
 			
 	// select 444 pixel format (Which is fastest to write)
 	lcd_color_mode(0x444);
+	lcd_rotate(0);
 
 	// set screen to black
 	int c=0x000000;
@@ -212,6 +213,64 @@ int lcd_setup(void)
 	return 0;
 }
 
+
+/*
+
+Rotate the display address mode.
+
+0 == normal
+1 == rotate clockwise 90
+2 == rotate clockwise 180
+3 == rotate clockwise 270
+
+*/
+int lcd_rotate(int rot)
+{
+	switch(rot)
+	{
+		case 0:
+			lcd_command(CMD_MADCTL); lcd_data(0x00);
+			lcd_command(CMD_VSCSAD); lcd_data_word(0);
+		break;
+		case 1:
+			lcd_command(CMD_MADCTL); lcd_data(0x60);
+			lcd_command(CMD_VSCSAD); lcd_data_word(0);
+		break;
+		case 2:
+			lcd_command(CMD_MADCTL); lcd_data(0xc0);
+			lcd_command(CMD_VSCSAD); lcd_data_word(80);
+		break;
+		case 3:
+			lcd_command(CMD_MADCTL); lcd_data(0xa0);
+			lcd_command(CMD_VSCSAD); lcd_data_word(80);
+		break;
+		default:
+			return 1; // error
+		break;
+	}
+	return 0;
+}
+
+/*
+
+set sleep mode.
+
+0   awake
+255 asleep
+
+*/
+int lcd_sleep(int sleep)
+{
+	if(sleep)
+	{
+		lcd_command(CMD_SLPIN);
+	}
+	else
+	{
+		lcd_command(CMD_SLPOUT);
+	}
+	return 0;
+}
 
 /*
 
