@@ -2,6 +2,8 @@
 TIMECAKE
 ========
 
+<img src="https://raw.githubusercontent.com/xriss/timecake/master/notes/working_clockface.jpg"/>
+
 My plan is to get as far as some sort of watch display, so far it looks 
 like we can do most things at the hardware level.
 
