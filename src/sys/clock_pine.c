@@ -6,6 +6,7 @@
 
 #include "nrf.h"
 
+#include "debug.h"
 #include "clock.h"
 #include "saveram.h"
 
@@ -16,6 +17,7 @@
 // something like this
 // https://github.com/NordicPlayground/nrf5-calendar-example/blob/master/nrf_calendar.c
 
+static int tickoff=0;
 
 /*
 	initialize hardware counters
@@ -42,7 +44,8 @@ int clock_setup(void)
 	NVIC_SetPriority(RTC0_IRQn, 3);
 	NVIC_EnableIRQ(RTC0_IRQn);
 	NRF_RTC0->TASKS_START = 1;
-    NRF_RTC0->TASKS_CLEAR = 1; // enable next interrupt
+    NRF_RTC0->TASKS_CLEAR = 1; // start
+    tickoff=0;
     
 	return 0;
 }
@@ -52,8 +55,9 @@ void RTC0_IRQHandler(void)
 	if(NRF_RTC0->EVENTS_COMPARE[0])
 	{
 		NRF_RTC0->EVENTS_COMPARE[0] = 0;
-		NRF_RTC0->TASKS_CLEAR = 1; // enable next interrupt
 		saveram->clock+=65536; // one second has passed
+		tickoff=NRF_RTC0->COUNTER&0xff8000; // 24bit counter
+		NRF_RTC0->CC[0] = tickoff+CLOCK_SCALE ; // next 1 second interrupt
 	}
 }
 
@@ -64,8 +68,13 @@ void RTC0_IRQHandler(void)
 long long int clock_time(void)
 {
 	NVIC_DisableIRQ(RTC0_IRQn);
-	long long int r=saveram->clock + ( NRF_RTC0->COUNTER << (16-CLOCK_POW) ) ;
+	int t=NRF_RTC0->COUNTER;
+	long long int r=saveram->clock;
 	NVIC_EnableIRQ(RTC0_IRQn);
+	
+	r+= ( (t-tickoff) << (16-CLOCK_POW) ) ;
+	
+//	PRINTF("ticks %08x\n",(t-tickoff) << (16-CLOCK_POW));
 	
 	return r;
 }
