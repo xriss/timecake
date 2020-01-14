@@ -22,6 +22,9 @@
 
 #include "main.h"
 
+#include "../art/lenna.h"
+
+
 static int frame=0;
 static struct tm *clocks=0;
 
@@ -161,6 +164,9 @@ static int shader_test(int x,int y,void *data)
 		}
 
 	}
+	
+	if(r==0x000000) { r=map_lenna(x,y); }
+	
 	return r;
 }
 

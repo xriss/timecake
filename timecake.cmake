@@ -59,6 +59,8 @@ list(APPEND SOURCE_FILES
   src/main.c
   src/main_test.c
   src/main_clock1.c
+  
+  art/lenna.c
 
 )
 

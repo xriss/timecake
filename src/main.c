@@ -25,7 +25,7 @@ struct shader_font main_lines[16];
 
 
 int main_state=0;
-int main_state_next=1;
+int main_state_next=2;
 
 int main_state_call(int mode)
 {

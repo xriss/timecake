@@ -6,3 +6,6 @@ sudo apt install -y gdb-multiarch
 sudo apt install -y cmake
 
 
+snap install gamecake
+
+
