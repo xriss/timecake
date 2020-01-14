@@ -58,7 +58,10 @@ list(APPEND SOURCE_FILES
   src/main_test.c
   src/main_clock1.c
   
-  art/lenna.c
+  art/face.c
+  art/hours.c
+  art/minutes.c
+  art/seconds.c
 
 )
 

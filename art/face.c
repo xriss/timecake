@@ -1,7 +1,9 @@
 // This file is machine generated and should not be edited...
 
-const int width=240;
-const int height=240;
+static const int hx=240;
+static const int hy=240;
+static const int cx=120;
+static const int cy=120;
 
 static const unsigned int cmap[]={
 0x4A0636,0x47073A,0x530536,0x5B033A,0x510D37,0x580B35,0x510F3D,0x660847,0x630C37,0x5A0F3D,0x511243,0x650F34,0x5D113A,0x57143C,0x601337,0x571542,
@@ -266,9 +268,11 @@ static const unsigned char bmap[]={
 
 int map_face(int x,int y)
 {
-	if( (x<0) || (x>=width) || (y<0) || (y>=height) )
+	x+=cx;
+	y+=cy;
+	if( (x<0) || (x>=hx) || (y<0) || (y>=hy) )
 	{ return -1; } // out of range
-	int idx=bmap[x+y*width];
+	int idx=bmap[x+y*hx];
 	return cmap[idx];
 }
 

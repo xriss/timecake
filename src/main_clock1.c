@@ -21,10 +21,15 @@
 
 #include "main.h"
 
-#include "../art/lenna.h"
+#include "../art/face.h"
+#include "../art/hours.h"
+#include "../art/minutes.h"
+#include "../art/seconds.h"
 
 
-static int mtx[4];
+static int mtxh[4];
+static int mtxm[4];
+static int mtxs[4];
 
 static int frame=0;
 static struct tm *clocks=0;
@@ -33,7 +38,7 @@ static struct tm *clocks=0;
 
 static int shader_test(int x,int y,void *data)
 {
-	int r=-1; // background flag
+	int r=-1; // -1 is transparent
 
 	int ty=(y/16)&0xf; // 0-15 line
 	struct shader_font *line=main_lines+ty;
@@ -42,143 +47,30 @@ static int shader_test(int x,int y,void *data)
 		r=shader_textline(x,y,line);
 	}
 
+	int cx=x-120;
+	int cy=y-120;
 	
-	if(r==-1) // fill background with simple animation
+	if(r==-1)
 	{
-		int d=120;
-//		int dd=d*d;
-		int cx=x-120.0f;
-		int cy=y-120.0f;
-		int cxa=cx < 0 ? -cx : cx; // abs
-		int cya=cy < 0 ? -cy : cy; // abs
-		
-		int dr=0; // distance around perimiter
-		int dc=0; // distance to center
-		
-		if( (cxa==0) && (cya==0) ) // deal with 0 0 case
-		{
-			dr=0;
-			dc=0;
-		}
-		else
-		if(cxa<cya)
-		{
-			dc=(cya<<16)/d;
-			if(cy<0)
-			{
-				dr=0x0000+((cx<<13)/cya);
-			}
-			else
-			{
-				dr=0x8000-((cx<<13)/cya);
-			}
-		}
-		else
-		{
-			dc=(cxa<<16)/d;
-			if(cx<0)
-			{
-				dr=0xc000-((cy<<13)/cxa);
-			}
-			else
-			{
-				dr=0x4000+((cy<<13)/cxa);
-			}
-		}
-		dr=dr&0xffff;
-		
-		r=0x000000;
-		int p; // polarity
-
-//		int s; // width of hand
-
-/*
-		if(dc<0x8000)
-		{
-			p=1;
-			if( dr*365 < clocks->tm_yday<<16 ) { p=p*-1; }
-			if(p>0) { r+=0x111111;} else { r-=0x111111; }
-		}
-//		else
-		if(dc<0xa000)
-		{
-			if(clocks->tm_yday&1) { p=1; } else { p=-1; }
-			if( dr*31 < clocks->tm_mday<<16 ) { p=p*-1; }
-			if(p>0) { r+=0x111111;} else { r-=0x111111; }
-		}
-//		else
-*/
-		if(dc<0x8000)
-		{
-/*
-			if(clocks->tm_hour&1) { p=1; } else { p=-1; }
-			if( dr*12 < (clocks->tm_hour%12)<<16 ) { p=p*-1; }
-			if(p>0) { r+=0x333333;} // else { r-=0x111111; }
-*/
-			int s=(0x0000+0xffff-dc);
-			s=s>>8;
-			s=(s*s)>>6;
-			p=( dr - ( ((clocks->tm_hour%12)<<16) / 12 ) - ( (clocks->tm_min<<16) / (60*60) ) )&0xffff;
-			if(p>0x8000) { p=0xffff-p; }
-			if(p<=s) { r=0xffffff; }
-			else
-			if(p<=s*2) { p=p-s; p=(p<<8)/s; r=p+(p<<8)+(p<<16); }
-//			p=(0xffff-p)>>10;
-//			r+=((p<<16)&0xff0000)+((p<<8)&0xff00)+(p&0xff);
-		}
-//		else
-		if(dc<0xc000)
-		{
-/*
-			if(clocks->tm_hour&1) { p=1; } else { p=-1; }
-			if( dr*60 < clocks->tm_min<<16 ) { p=p*-1; }
-			if(p>0) { r+=0x333333;} // else { r-=0x222222; }
-*/
-			int s=(0x0000+0xffff-dc);
-			s=s>>8;
-			s=(s*s)>>6;
-			p=(dr - ( (clocks->tm_min<<16) / 60 ) - ( (clocks->tm_sec<<16) / (60*60) ) )&0xffff;
-			if(p>0x8000) { p=0xffff-p; }
-			if(p<=s) { r=0xffffff; }
-			else
-			if(p<=s*2) { p=p-s; p=(p<<8)/s; r=p+(p<<8)+(p<<16); }
-//			p=(0xffff-p)>>10;
-//			r+=((p<<16)&0xff0000)+((p<<8)&0xff00)+(p&0xff);
-		}
-//		else
-		{
-/*
-			if(clocks->tm_min&1) { p=1; } else { p=-1; }
-			if( dr*60 < clocks->tm_sec<<16 ) { p=p*-1; }
-			if(p>0) { r+=0x333333;} // else { r-=0x333333; }
-*/
-			int s=(0x0000+0xffff-dc);
-			s=s>>8;
-			s=(s*s)>>6;
-			p=(dr - ( (clocks->tm_sec<<16) / 60 ) )&0xffff;
-			if(p>0x8000) { p=0xffff-p; }
-			if(p<=s) { r=0xffffff; }
-			else
-			if(p<=s*2) { p=p-s; p=(p<<8)/s; r=p+(p<<8)+(p<<16); }
-//			p=(0xffff-p)>>10;
-//			r+=((p<<16)&0xff0000)+((p<<8)&0xff00)+(p&0xff);
-		}
-
+		int rx = ( cx*mtxs[0] + cy*mtxs[1] ) >> 16 ;
+		int ry = ( cx*mtxs[2] + cy*mtxs[3] ) >> 16 ;
+		r=map_seconds(rx,ry);
 	}
-	
-/*
-	if(r==0x000000) // should be transparent
+	if(r==-1)
 	{
-		int cx=x-120;
-		int cy=y-120;
-		int rx = ( cx*mtx[0] + cy*mtx[1] ) >> 16 ;
-		int ry = ( cx*mtx[2] + cy*mtx[3] ) >> 16 ;
-		r=map_lenna(rx+120,ry+120);
+		int rx = ( cx*mtxm[0] + cy*mtxm[1] ) >> 16 ;
+		int ry = ( cx*mtxm[2] + cy*mtxm[3] ) >> 16 ;
+		r=map_minutes(rx,ry);
 	}
-*/
-	if(r==0x000000) // should be transparent
+	if(r==-1)
 	{
-		r=map_lenna(x,y);
+		int rx = ( cx*mtxh[0] + cy*mtxh[1] ) >> 16 ;
+		int ry = ( cx*mtxh[2] + cy*mtxh[3] ) >> 16 ;
+		r=map_hours(rx,ry);
+	}
+	if(r==-1)
+	{
+		r=map_face(cx,cy);
 	}
 
 	if(r==-1) { r=0x000000; }
@@ -222,6 +114,16 @@ static int main_clean()
 
 static time_t oldt;
 
+static void mtx_rotate(float rad , int mtx[4])
+{
+	float s=sinf(rad);
+	float c=cosf(rad);
+	mtx[0] = c*65536;
+	mtx[1] = s*65536;
+	mtx[2] =-s*65536;
+	mtx[3] = c*65536;
+}
+
 static int main_update()
 {
 
@@ -258,15 +160,13 @@ static int main_update()
 	// only draw if time changes
 	if(newtime)
 	{
-		float r=clocks->tm_sec*((float)(2.0*M_PI/60.0));
-		float s=sinf(r);
-		float c=cosf(r);
+		int s=clocks->tm_sec;
+		int m=clocks->tm_min;
+		int h=clocks->tm_hour%12;
 		
-		mtx[0] = c*65536;
-		mtx[1] = s*65536;
-		mtx[2] =-s*65536;
-		mtx[3] = c*65536;
-		
+		mtx_rotate( s           *((float)(2.0*M_PI/60.0)),mtxs);
+		mtx_rotate((m+(s/60.0f))*((float)(2.0*M_PI/60.0)),mtxm);
+		mtx_rotate((h+(m/60.0f))*((float)(2.0*M_PI/60.0)),mtxh);
 		lcd_shader(0,0,240,240,shader_test,0);
 	}
 /*
