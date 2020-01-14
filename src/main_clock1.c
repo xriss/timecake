@@ -6,8 +6,6 @@
 #include <nrf.h>
 #include "nrf_gpio.h"
 
-#include "fixmath.h"
-
 
 #include "sys/debug.h"
 
@@ -24,6 +22,8 @@
 
 #include "../art/lenna.h"
 
+
+static int mtx[4];
 
 static int frame=0;
 static struct tm *clocks=0;
@@ -165,8 +165,21 @@ static int shader_test(int x,int y,void *data)
 
 	}
 	
-	if(r==0x000000) { r=map_lenna(x,y); }
+/*
+	if(r==0x000000) // should be transparent
+	{
+		int cx=x-120;
+		int cy=y-120;
+		int rx = ( cx*mtx[0] + cy*mtx[1] ) >> 16 ;
+		int ry = ( cx*mtx[2] + cy*mtx[3] ) >> 16 ;
+		r=map_lenna(rx+120,ry+120);
+	}
+	r=map_lenna(x,y);
+*/
 	
+
+	if(r==-1) { r=0x000000; }
+
 	return r;
 }
 
@@ -237,9 +250,19 @@ static int main_update()
 
 	for(int idx=0;idx<16;idx++) { main_lines[idx].length=strlen(main_lines[idx].text); }
 
+
 	// only draw if time changes
 	if(newtime)
 	{
+		float r=clocks->tm_sec*((float)(2.0*M_PI/60.0));
+		float s=sinf(r);
+		float c=cosf(r);
+		
+		mtx[0] = c*65536;
+		mtx[1] = s*65536;
+		mtx[2] =-s*65536;
+		mtx[3] = c*65536;
+		
 		lcd_shader(0,0,240,240,shader_test,0);
 	}
 /*
@@ -249,6 +272,7 @@ static int main_update()
 		lcd_shader(0,y+f,240,1,shader_test,0); // interlace updates
 	}
 */
+
 
 	frame++;
 	return 0;
