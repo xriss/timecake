@@ -12,6 +12,7 @@
 
 #include "nrf.h"
 #include "nrf_gpio.h"
+#include "nrf_delay.h"
 
 #include "main.h"
 
@@ -45,7 +46,7 @@ int main_state_call(int mode)
 				break;
 				case 3: // clean, screen on
 					lcd_sleep(0);
-					lcd_backlight(255);
+//					lcd_backlight(255);
 				break;
 			}
 		break;
@@ -87,12 +88,17 @@ int main(void)
 			if(main_state>2) { main_state=0; } // max state wrap, state 0 is sleepy time
 
 			main_state_call(1); // setup new state
+
+			if(main_state!=0)
+			{
+				nrf_delay_ms(1000/60); // need to catch next frame
+				lcd_backlight(255); // display on
+			}
 		}
 
 		
 		main_state_call(2); // update current state
 
-		lcd_backlight(255); // display on
 	}
 
 	return 0;

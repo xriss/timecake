@@ -210,6 +210,7 @@ static int main_setup()
 		line->text[0]=0;
 		line->length=0;
 	}
+	
 	return 0;
 }
 
@@ -285,7 +286,7 @@ int main_clock1(int mode)
 {
 	switch(mode)
 	{
-		case 1: return main_setup();
+		case 1: return main_setup() + main_update();
 		case 2: return main_update();
 		case 3: return main_clean();
 	}

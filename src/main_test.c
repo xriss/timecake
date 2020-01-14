@@ -78,6 +78,7 @@ PRINTF("SETUP TEST\n");
 		line->text[0]=0;
 		line->length=0;
 	}
+	
 	return 0;
 }
 
@@ -120,12 +121,11 @@ static int main_update()
 	}
 
 
-	{
-		int flags;
-		float voltage;
-		float percent;
-		battery_read(&flags,&voltage,&percent);
-		char * charging="    ";
+	int flags;
+	float voltage;
+	float percent;
+	battery_read(&flags,&voltage,&percent);
+	char * charging="    ";
 //			if(flags==2) { charging="===="; } // Charged (never reaches this state?)
 //			else
 	if(flags&1) // Charging
@@ -149,44 +149,44 @@ static int main_update()
 		}
 	}
 
-		time_t t16 = clock_time(); // seconds since 1970 * 65536
-		time_t t = t16>>16; // seconds since 1970
-		struct tm *tm = localtime(&t);
-		
+	time_t t16 = clock_time(); // seconds since 1970 * 65536
+	time_t t = t16>>16; // seconds since 1970
+	struct tm *tm = localtime(&t);
+	
 //			unsigned char * acc=touch_read();
 
 
-		int idx=0;
+	int idx=0;
 //			snprintf(lines[idx++].text,32,"Hello World!");
-		snprintf(main_lines[idx++].text,32,"Battery : %d.%03dv : %3d%% %s",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent,charging);
-		snprintf(main_lines[idx++].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
-		snprintf(main_lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
+	snprintf(main_lines[idx++].text,32,"Battery : %d.%03dv : %3d%% %s",(int)voltage,(int)((voltage-(int)voltage)*1000.0f),(int)percent,charging);
+	snprintf(main_lines[idx++].text,32,"Charge : %3s       Power : %3s", flags&1?"YES":"NO" , flags&2?"YES":"NO" );
+	snprintf(main_lines[idx++].text,32,"%d-%02d-%02d %02d:%02d:%02d", tm->tm_year+1900 , tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec );
 
-		snprintf(main_lines[idx++].text,32,"Clock %u . %04x", (unsigned int)t,(int)(t16&0xffff));
+	snprintf(main_lines[idx++].text,32,"Clock %u . %04x", (unsigned int)t,(int)(t16&0xffff));
 
-		snprintf(main_lines[idx++].text,32,"Butt %d", main_butt );
+	snprintf(main_lines[idx++].text,32,"Butt %d", main_butt );
 
 /*
-		int ai=0;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
-		snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	int ai=0;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
+	snprintf(main_lines[idx++].text,32,"%02x %02x %02x %02x %02x %02x %02x %02x", acc[ai+0],acc[ai+1],acc[ai+2],acc[ai+3],acc[ai+4],acc[ai+5],acc[ai+6],acc[ai+7] ); ai+=8;
 */
 
-		for(int idx=0;idx<16;idx++) { main_lines[idx].length=strlen(main_lines[idx].text); }
+	for(int idx=0;idx<16;idx++) { main_lines[idx].length=strlen(main_lines[idx].text); }
 
-		int f=frame&1;
-		for(int y=0;y<240;y+=2)
-		{
-			lcd_shader(0,y+f,240,1,shader_test,&i); // interlace updates
-		}
-		frame++;
+	int f=frame&1;
+	for(int y=0;y<240;y+=2)
+	{
+		lcd_shader(0,y+f,240,1,shader_test,&i); // interlace updates
 	}
+	frame++;
+
 	return 0;
 }
 
@@ -195,7 +195,7 @@ int main_test(int mode)
 {
 	switch(mode)
 	{
-		case 1: return main_setup();
+		case 1: return main_setup() + main_update() + main_update();
 		case 2: return main_update();
 		case 3: return main_clean();
 	}
