@@ -285,25 +285,31 @@ Only 4 levels but use a bright value from 0 to 255
 int lcd_backlight(int bright)
 {
 
-	nrf_gpio_pin_write(LCD_BACKLIGHT_LOW,1);
-	nrf_gpio_pin_write(LCD_BACKLIGHT_MID,1);
-	nrf_gpio_pin_write(LCD_BACKLIGHT_HIGH,1);
 
 	if(bright<0x40) // darkest
 	{
+		nrf_gpio_pin_write(LCD_BACKLIGHT_LOW,1);
+		nrf_gpio_pin_write(LCD_BACKLIGHT_MID,1);
+		nrf_gpio_pin_write(LCD_BACKLIGHT_HIGH,1);
 	}
 	else
 	if(bright<0x80)
 	{
 		nrf_gpio_pin_write(LCD_BACKLIGHT_LOW,0);
+		nrf_gpio_pin_write(LCD_BACKLIGHT_MID,1);
+		nrf_gpio_pin_write(LCD_BACKLIGHT_HIGH,1);
 	}
 	else
 	if(bright<0xc0)
 	{
+		nrf_gpio_pin_write(LCD_BACKLIGHT_LOW,1);
 		nrf_gpio_pin_write(LCD_BACKLIGHT_MID,0);
+		nrf_gpio_pin_write(LCD_BACKLIGHT_HIGH,1);
 	}
 	else
 	{
+		nrf_gpio_pin_write(LCD_BACKLIGHT_LOW,1);
+		nrf_gpio_pin_write(LCD_BACKLIGHT_MID,1);
 		nrf_gpio_pin_write(LCD_BACKLIGHT_HIGH,0);
 	}
 

@@ -4,6 +4,7 @@
 
 #include <nrf.h>
 #include "nrf_gpio.h"
+#include "nrf_delay.h"
 
 #include "sys/debug.h"
 
@@ -195,9 +196,28 @@ int main_test(int mode)
 {
 	switch(mode)
 	{
-		case 1: return main_setup() + main_update() + main_update();
-		case 2: return main_update();
-		case 3: return main_clean();
+		case 1:
+			main_setup();
+			main_update();
+			main_update();
+			nrf_delay_ms(1000/10); // need to catch next frame
+			lcd_backlight(0x60); // display on
+			nrf_delay_ms(1000/10);
+			lcd_backlight(0xa0); // fade
+			nrf_delay_ms(1000/10);
+			lcd_backlight(0xff); // fade
+		break;
+		case 2:
+			main_update();
+		break;
+		case 3:
+			lcd_backlight(0xa0); // fade
+			nrf_delay_ms(1000/10);
+			lcd_backlight(0x60); // fade
+			nrf_delay_ms(1000/10);
+			lcd_backlight(0); // display off
+			main_clean();
+		break;
 	}
 	return 0;
 }

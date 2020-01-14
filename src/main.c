@@ -46,7 +46,7 @@ int main_state_call(int mode)
 				break;
 				case 3: // clean, screen on
 					lcd_sleep(0);
-//					lcd_backlight(255);
+					lcd_backlight(0);
 				break;
 			}
 		break;
@@ -77,9 +77,7 @@ int main(void)
 		}
 
 		if(main_state_next) // flag a state change 
-		{
-			lcd_backlight(0); // display off
-			
+		{			
 			main_state_call(3); // clean old state
 
 			main_state=main_state_next;
@@ -88,12 +86,6 @@ int main(void)
 			if(main_state>2) { main_state=0; } // max state wrap, state 0 is sleepy time
 
 			main_state_call(1); // setup new state
-
-			if(main_state!=0)
-			{
-				nrf_delay_ms(1000/60); // need to catch next frame
-				lcd_backlight(255); // display on
-			}
 		}
 
 		
