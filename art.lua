@@ -92,5 +92,8 @@ fp:close()
 
 end
 
-process("lenna")
+process("face",120,120)
+process("hours",120,120)
+process("minutes",120,120)
+process("seconds",120,120)
 
