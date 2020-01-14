@@ -166,7 +166,7 @@ static int main_update()
 		
 		mtx_rotate( s           *((float)(2.0*M_PI/60.0)),mtxs);
 		mtx_rotate((m+(s/60.0f))*((float)(2.0*M_PI/60.0)),mtxm);
-		mtx_rotate((h+(m/60.0f))*((float)(2.0*M_PI/60.0)),mtxh);
+		mtx_rotate((h+(m/60.0f))*((float)(2.0*M_PI/12.0)),mtxh);
 		lcd_shader(0,0,240,240,shader_test,0);
 	}
 /*
