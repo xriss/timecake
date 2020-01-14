@@ -55,7 +55,7 @@ static int shader_test(int x,int y,void *data)
 static int main_setup()
 {
 
-PRINTF("SETUP TEST\n");
+PRINTF("SETUP TIME %d\n",(int)time(0));
 
 	lcd_color_mode(0x444);
 	lcd_rotate(3);

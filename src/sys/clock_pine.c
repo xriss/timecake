@@ -27,7 +27,7 @@ int clock_setup(void)
 {
 	time_t t = time(NULL); // this will return -1 or the correct time if semihosting is working
 
-	if(t>TIME_OF_WRITING) // if time is after 2020 then assume it is correct
+	if(((int)t)>TIME_OF_WRITING) // if time is after 2020 then assume it is correct
 	{
 		saveram->clock=t*65536;
 	}
