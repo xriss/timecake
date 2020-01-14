@@ -174,9 +174,11 @@ static int shader_test(int x,int y,void *data)
 		int ry = ( cx*mtx[2] + cy*mtx[3] ) >> 16 ;
 		r=map_lenna(rx+120,ry+120);
 	}
-	r=map_lenna(x,y);
 */
-	
+	if(r==0x000000) // should be transparent
+	{
+		r=map_lenna(x,y);
+	}
 
 	if(r==-1) { r=0x000000; }
 
