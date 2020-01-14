@@ -17,17 +17,15 @@ include_directories(./libfixmath/libfixmath)
 add_definitions( -DFIXMATH_NO_CACHE )
 
 
-list(APPEND SOURCE_FILES
-
-	libfixmath/libfixmath/fix16.c
-	libfixmath/libfixmath/fix16_sqrt.c
-	libfixmath/libfixmath/fix16_trig.c
-	libfixmath/libfixmath/uint32.c
-	libfixmath/libfixmath/fix16_exp.c
-	libfixmath/libfixmath/fix16_str.c
-	libfixmath/libfixmath/fract32.c
-
-)
+#list(APPEND SOURCE_FILES
+#	libfixmath/libfixmath/fix16.c
+#	libfixmath/libfixmath/fix16_sqrt.c
+#	libfixmath/libfixmath/fix16_trig.c
+#	libfixmath/libfixmath/uint32.c
+#	libfixmath/libfixmath/fix16_exp.c
+#	libfixmath/libfixmath/fix16_str.c
+#	libfixmath/libfixmath/fract32.c
+#)
 
 
 list(APPEND SOURCE_FILES

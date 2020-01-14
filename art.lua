@@ -1,11 +1,15 @@
 
 
-local grd = require "wetgenes.grd"
+local wgrd = require "wetgenes.grd"
 
 
 local function process(name)
 
-local g=grd.create( "art/"..name..".png" )
+print( "Processing art/"..name..".png into a c file")
+
+local g=wgrd.create( "art/"..name..".png" )
+g:convert(wgrd.FMT_U8_INDEXED) -- make sure it is indexed
+
 local fp=io.open("art/"..name..".c","wb")
 
 local cmap=g:palette(0,256)
