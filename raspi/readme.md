@@ -31,7 +31,7 @@ Check the PI is available
 	ping raspocd.local
 	nmap -v -T5 10.42.0.0/24 -oG - | grep Up	
 
-In theory you can
+In theory you can now
 
 	telnet raspocd.local 4444
 
@@ -48,7 +48,31 @@ boot and continuously try to connect. ( all the .boot.sh files in the
 pi home directory will auto run. ) then just ssh in yourself to run 
 things manually.
 
----
+Unlocking the Pine Time
+-----------------------
+
+I think the following works, but I'm not sure since having done it once 
+you do not need to do it again. Something like this worked for me, 
+possibly it needs to be repeated a few times...
+
+# connect to openocd
+telnet raspocd.local 4444
+
+	# show status 0==protect
+	nrf52.dap apreg 1 0x0c
+
+	# ask for protect to be removed
+	nrf52.dap apreg 1 0x04 0x01
+
+	# perfrom reset and remove protect
+	reset halt
+
+	# show status 0==protect so this should now be 1
+	nrf52.dap apreg 1 0x0c
+
+
+Qemu management scripts
+-----------------------
 
 The scripts for handling the qemu image are documented bellow if you
 run into any problems or wish to tweak things.

@@ -4,8 +4,15 @@ TIMECAKE
 
 <img src="https://raw.githubusercontent.com/xriss/timecake/master/notes/working_clockface.jpg"/>
 
-My plan is to get as far as some sort of watch display, so far it looks 
-like we can do most things at the hardware level.
+Details about the Pine Time can be found at 
+https://wiki.pine64.org/index.php/PineTime
+
+My plan with this project is to get as far as some sort of watch 
+display, so far it looks like we can do most things at the hardware 
+level. This means we will NOT be using an operating system such as 
+FreeRTOS, Zephyr, mynewt, MbedOS or RIOT.
+
+The following was tested and working on Ubuntu 19.10
 
 See raspi directory for scripts to build an sd card image to run on a 
 PI. Or check github releases for an sd card image you could just 
