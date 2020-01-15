@@ -55,8 +55,8 @@ I think the following works, but I'm not sure since having done it once
 you do not need to do it again. Something like this worked for me, 
 possibly it needs to be repeated a few times...
 
-# connect to openocd
-telnet raspocd.local 4444
+	#connect to openocd
+	telnet raspocd.local 4444
 
 	# show status 0==protect
 	nrf52.dap apreg 1 0x0c
